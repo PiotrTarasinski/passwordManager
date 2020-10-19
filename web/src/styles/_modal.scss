@@ -1,0 +1,26 @@
+@import 'variables';
+
+.container {
+  width: 680px;
+  max-width: 100%;
+  color: $grey;
+  
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .sub-title {
+    font-weight: normal;
+    font-size: 18px;
+    margin: 0;
+  }
+}
