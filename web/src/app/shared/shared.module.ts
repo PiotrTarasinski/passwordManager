@@ -1,4 +1,5 @@
 // COMPONENTS
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 // MODALS
 
@@ -31,8 +32,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
-const COMPONENTS = [];
+const COMPONENTS = [
+  NavbarComponent,
+];
 
 const MODALS = [];
 
@@ -66,6 +70,7 @@ const MODULES = [
   MatRadioModule,
   MatTabsModule,
   MatSliderModule,
+  MatToolbarModule,
 ];
 
 @NgModule({
@@ -75,7 +80,8 @@ const MODULES = [
   declarations: [
     COMPONENTS,
     PIPES,
-    MODALS
+    MODALS,
+    NavbarComponent
   ],
   exports: [
     COMPONENTS,
