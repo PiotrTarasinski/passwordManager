@@ -23,6 +23,7 @@ import { SpinnerHttpInterceptor } from './utils/SpinnerHttpInterceptor';
 import { HomePageComponent } from './pages/HomePage/home-page.component';
 import { LoginPageComponent } from './pages/LoginPage/login-page.component';
 import { RegisterPageComponent } from './pages/RegisterPage/register-page.component';
+import { DashboardPageComponent } from './pages/DashboardPage/dashboard-page.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { RegisterPageComponent } from './pages/RegisterPage/register-page.compon
     HomePageComponent,
     LoginPageComponent,
     RegisterPageComponent,
+    DashboardPageComponent,
   ],
   imports: [
     BrowserModule,

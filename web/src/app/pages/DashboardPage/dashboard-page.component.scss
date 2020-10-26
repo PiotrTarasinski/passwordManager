@@ -1,0 +1,16 @@
+@import 'variables';
+@import 'table';
+
+.container {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+
+  .content-container {
+    padding: 30px;
+    background-color: #fff;
+    opacity: 0.97;
+    border-radius: 10px;
+  }
+}

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { DashboardPageComponent } from './pages/DashboardPage/dashboard-page.component';
 import { HomePageComponent } from './pages/HomePage/home-page.component';
 import { LoginPageComponent } from './pages/LoginPage/login-page.component';
 import { RegisterPageComponent } from './pages/RegisterPage/register-page.component';
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterPageComponent
+  },
+  {
+    path: 'dashobard',
+    component: DashboardPageComponent
   },
   {
     path: '**',

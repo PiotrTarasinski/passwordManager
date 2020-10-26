@@ -30,6 +30,12 @@ img {
   display: block;
 }
 
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1340px;
+  }
+}
+
 .main-container {
   position: relative;
   height: calc(100vh - 64px);
@@ -43,6 +49,12 @@ img {
   width: 42%;
   padding-left: 8vw;
   justify-content: center;
+}
+
+.description {
+  font-size: 21px;
+  font-weight: 200;
+  color: $grey;
 }
 
 .main-header {

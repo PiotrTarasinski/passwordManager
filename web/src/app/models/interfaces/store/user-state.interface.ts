@@ -1,4 +1,6 @@
 export interface IUserState {
-  username: string;
-  email: string;
+  isLoggedIn: boolean;
+  id?: string;
+  username?: string;
+  password?: string;
 }

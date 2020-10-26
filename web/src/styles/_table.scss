@@ -17,15 +17,7 @@ th.mat-sort-header-sorted {
   border-top-right-radius: 8px;
 
   .search-input {
-    min-width: 260px;
-  }
-
-  .search-icon {
-    color: $grey;
-
-    &:hover {
-      cursor: pointer;
-    }
+    max-width: 320px;
   }
 }
 
@@ -37,7 +29,6 @@ th.mat-sort-header-sorted {
 .search-form {
   background-color: $milk;
 }
-
 
 .icon-button {
   color: $grey;
@@ -69,7 +60,6 @@ th.mat-sort-header-sorted {
   border-bottom-right-radius: 8px;
 
   .footer-icon-button {
-    
     &:enabled {
       color: $grey;
     }
@@ -80,21 +70,19 @@ th.mat-sort-header-sorted {
 }
 
 .data-empty {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
   text-align: center;
   color: $grey;
-  
+
   mat-icon {
     font-size: 96px;
     width: 96px;
     height: 96px;
   }
-  
+
   .message {
     font-size: 18px;
     margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     font-weight: bold;
   }
 }

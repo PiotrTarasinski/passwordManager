@@ -2,8 +2,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { UserActions, UserActionTypes } from './user.actions';
 
 const initialState: IUserState = {
-  username: '',
-  email: '',
+  isLoggedIn: false,
 };
 
 export function userReducer(state: IUserState = initialState, action: UserActions) {
