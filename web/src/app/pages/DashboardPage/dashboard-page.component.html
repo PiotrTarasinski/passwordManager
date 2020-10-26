@@ -6,15 +6,20 @@
     </p>
 
     <div class="toolbar mt-3">
+      <button mat-fab class="mr-3 add-button" matTooltip="Add New Credential" (click)="openCredentialModal()">
+        <mat-icon>add</mat-icon>
+      </button>
       <mat-form-field class="w-100 search-input" appearance="outline">
         <mat-label>Search</mat-label>
-        <mat-icon matPrefix class="mr-2">search</mat-icon>
         <input 
           matInput
           placeholder="Search"
-          (keydown)="filterByValue()"
+          (keydown.enter)="filterByValue()"
           [(ngModel)]="search"
         />
+        <button mat-icon-button matSuffix (click)="filterByValue()">
+          <mat-icon>search</mat-icon>
+        </button>
       </mat-form-field>
     </div>
     <table mat-table [dataSource]="dataSource" matSort matSortActive="url" matSortDirection="desc" matSortDisableClear
@@ -22,7 +27,9 @@
 
       <ng-container matColumnDef="url">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Page url</th>
-        <td mat-cell *matCellDef="let element">{{ element?.url }}</td>
+        <td mat-cell *matCellDef="let element">
+          <a href="{{ element?.url }}" target="_blank">{{ element?.url }}</a>
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="description">
@@ -41,8 +48,30 @@
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element"></td>
+        <th mat-header-cell *matHeaderCellDef class="text-center">Actions</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <button
+            mat-icon-button
+            matTooltip="{{ true ? 'Hide Password' : 'Show password' }}"
+            (click)="openCredentialModal(element)"
+          >
+            <mat-icon>{{ true ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Edit Credential"
+            (click)="openCredentialModal(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Remove Credential"
+            (click)="removeCredential(element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -52,7 +81,7 @@
     <div class="data-empty py-4" *ngIf="isInitialized && !dataSource?.filteredData?.length">
       <mat-icon>search_off</mat-icon>
       <p class="message">
-        {{ search ? "No results found for " + search : 'No results found' }}
+        {{ searchedBy ? "No results found for " + searchedBy : 'No results found' }}
       </p>
     </div>
 

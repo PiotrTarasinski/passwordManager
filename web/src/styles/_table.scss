@@ -30,15 +30,6 @@ th.mat-sort-header-sorted {
   background-color: $milk;
 }
 
-.icon-button {
-  color: $grey;
-  transition: color 0.4s ease;
-
-  &:hover:not(:disabled) {
-    color: rgba($color: #000000, $alpha: 0.9);
-  }
-}
-
 .table-row,
 .table-row-click {
   transition: background-color 0.2s linear;

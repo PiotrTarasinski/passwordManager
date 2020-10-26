@@ -14,3 +14,12 @@
     border-radius: 10px;
   }
 }
+
+.add-button {
+  background-color: $primary;
+  margin-bottom: 22px;
+
+  .mat-icon {
+    color: #fff;
+  }
+}

@@ -1,7 +1,8 @@
 // COMPONENTS
-import { NavbarComponent } from './components/Navbar/navbar.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 // MODALS
+import { CredentialModalComponent } from './modals/CredentialModal/credential-modal.component';
 
 // PIPES
 import { FormatDatePipe } from './pipes/format-date.pipe';
@@ -38,7 +39,9 @@ const COMPONENTS = [
   NavbarComponent,
 ];
 
-const MODALS = [];
+const MODALS = [
+  CredentialModalComponent
+];
 
 const PIPES = [
   FormatDatePipe,
@@ -81,7 +84,8 @@ const MODULES = [
     COMPONENTS,
     PIPES,
     MODALS,
-    NavbarComponent
+    NavbarComponent,
+    CredentialModalComponent
   ],
   exports: [
     COMPONENTS,
