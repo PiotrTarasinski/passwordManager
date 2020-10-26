@@ -1,5 +1,5 @@
 // COMPONENTS
-import { NavbarComponent } from './components/navbar/navbar.component';
+import { NavbarComponent } from './components/Navbar/navbar.component';
 
 // MODALS
 

@@ -21,11 +21,15 @@ import { SharedModule } from './shared/shared.module';
 import { AppEffects, metaReducers, reducers } from './store';
 import { SpinnerHttpInterceptor } from './utils/SpinnerHttpInterceptor';
 import { HomePageComponent } from './pages/HomePage/home-page.component';
+import { LoginPageComponent } from './pages/LoginPage/login-page.component';
+import { RegisterPageComponent } from './pages/RegisterPage/register-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomePageComponent
+    HomePageComponent,
+    LoginPageComponent,
+    RegisterPageComponent,
   ],
   imports: [
     BrowserModule,

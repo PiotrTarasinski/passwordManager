@@ -1,0 +1,81 @@
+<div class="content-left-container">
+  <div>
+    <h1 class="main-header mb-2">Create Account</h1>
+    <p class="description">
+      Create account and store all your important credentials in one secure place.
+    </p>
+    <form novalidate [formGroup]="form">
+      <div class="row">
+        <div class="col-12 col-xl-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Username</mat-label>
+            <mat-icon matPrefix class="mr-2">account_circle</mat-icon>
+            <input
+              matInput
+              formControlName="username"
+              name="prevent_autofill_username"
+              placeholder="Username"
+              autocomplete="new-password"
+            />
+            <mat-error *ngIf="form.controls.username.invalid">
+              {{ form.controls.username | inputError }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-xl-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Hash Algorithm</mat-label>
+            <mat-select disableOptionCentering formControlName="hashAlgorithm">
+              <mat-option *ngFor="let algorithm of hashAlgorithmEnum | keyvalue" value="{{ algorithm.value }}">
+                {{ algorithm.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-xl-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Password</mat-label>
+            <mat-icon matPrefix class="mr-2">vpn_key</mat-icon>
+            <input
+              matInput
+              formControlName="password"
+              name="prevent_autofill_password"
+              placeholder="Password"
+              [type]="hidePassword ? 'password' : 'text'"
+              autocomplete="new-password" 
+            />
+            <mat-error *ngIf="form.controls.password.invalid">
+              {{ form.controls.password | inputError }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-xl-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <mat-icon matPrefix class="mr-2">verified_user</mat-icon>
+            <input
+              matInput
+              formControlName="confirmPassword"
+              name="prevent_autofill_confirm_password"
+              placeholder="Confirm Password"
+              [type]="hidePassword ? 'password' : 'text'"
+              autocomplete="new-password" 
+            />
+            <mat-error *ngIf="form.controls.confirmPassword.invalid">
+              {{ form.controls.confirmPassword | inputError }}
+            </mat-error>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+    <button mat-flat-button class="action-btn pink my-2" (click)="submit()">Register</button>
+    <p class="description mt-4">
+      Already have an account? <a routerLink="/login" class="link">Sign in</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="content-left-container">
+  <div>
+    <h1 class="main-header mb-2">Welcome Back</h1>
+    <p class="description">
+      Sign in to get access to your account.
+    </p>
+    <form novalidate [formGroup]="form">
+      <mat-form-field class="w-100 custom-field-width" appearance="outline">
+        <mat-label>Username</mat-label>
+        <mat-icon matPrefix class="mr-2">account_circle</mat-icon>
+        <input
+          matInput
+          formControlName="username"
+          name="prevent_autofill_username"
+          placeholder="Username"
+          autocomplete="new-password"
+        />
+        <mat-error *ngIf="form.controls.username.invalid">
+          {{ form.controls.username | inputError }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-100 custom-field-width" appearance="outline">
+        <mat-label>Password</mat-label>
+        <mat-icon matPrefix class="mr-2">vpn_key</mat-icon>
+        <input 
+          matInput
+          formControlName="password" 
+          name="prevent_autofill_password"
+          placeholder="Password"
+          [type]="hidePassword ? 'password' : 'text'"
+          autocomplete="new-password" 
+        />
+        <mat-error *ngIf="form.controls.password.invalid">
+          {{ form.controls.password | inputError }}
+        </mat-error>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+    <button mat-flat-button class="action-btn primary my-2" (click)="submit()">Login</button>
+    <p class="description mt-4">
+      Don't have an account? <a routerLink="/register" class="link">Sign up</a>
+    </p>
+  </div>
+</div>

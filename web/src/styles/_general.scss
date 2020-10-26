@@ -13,13 +13,17 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   padding: 0 2px 0 2px;
   background-image: url('../assets/background.png');
-  background-position: bottom right;
+  background-position: center;
   background-size: cover;
 }
 
 * {
   box-sizing: border-box;
   overflow-wrap: break-word;
+}
+
+a {
+  text-decoration: none !important;
 }
 
 img {
@@ -30,6 +34,21 @@ img {
   position: relative;
   height: calc(100vh - 64px);
   overflow-y: auto;
+}
+
+.content-left-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 42%;
+  padding-left: 8vw;
+  justify-content: center;
+}
+
+.main-header {
+  color: $primary;
+  font-size: 62px;
+  font-weight: 600;
 }
 
 .toast-custom {
@@ -68,4 +87,13 @@ img {
 
 .action-btn.pink {
   background-color: $pink;
+}
+
+.mat-icon-button,
+.mat-button-base {
+  outline: none !important;
+}
+
+.mat-icon {
+  color: $grey;
 }

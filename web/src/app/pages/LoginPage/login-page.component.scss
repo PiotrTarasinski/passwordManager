@@ -1,13 +1,22 @@
 @import 'variables';
 
 .description {
-  font-size: 30px;
-  font-weight: 300;
+  font-size: 21px;
+  font-weight: 200;
   color: $grey;
+}
+
+.custom-field-width {
+  max-width: 408px;
 }
 
 .action-btn {
   font-size: 26px;
   border-radius: 24px;
   padding: 4px 24px;
+}
+
+.link {
+  font-weight: 600;
+  color: $pink;
 }

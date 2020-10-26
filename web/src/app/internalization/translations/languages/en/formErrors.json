@@ -1,5 +1,6 @@
 {
   "general": {
-    "required": "This field is required"
+    "required": "This field is required",
+    "passwordNotMatch": "Passwords do not match"
   }
 }
