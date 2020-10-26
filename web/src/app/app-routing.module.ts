@@ -20,7 +20,7 @@ const routes: Routes = [
     component: RegisterPageComponent
   },
   {
-    path: 'dashobard',
+    path: 'dashboard',
     component: DashboardPageComponent
   },
   {
