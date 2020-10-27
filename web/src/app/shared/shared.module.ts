@@ -3,6 +3,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 
 // MODALS
 import { CredentialModalComponent } from './modals/CredentialModal/credential-modal.component';
+import { ChangePasswordModalComponent } from './modals/ChangePasswordModal/change-password-modal.component';
 
 // PIPES
 import { FormatDatePipe } from './pipes/format-date.pipe';
@@ -34,13 +35,15 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule} from '@angular/material/menu';
 
 const COMPONENTS = [
   NavbarComponent,
 ];
 
 const MODALS = [
-  CredentialModalComponent
+  CredentialModalComponent,
+  ChangePasswordModalComponent,
 ];
 
 const PIPES = [
@@ -74,6 +77,7 @@ const MODULES = [
   MatTabsModule,
   MatSliderModule,
   MatToolbarModule,
+  MatMenuModule,
 ];
 
 @NgModule({

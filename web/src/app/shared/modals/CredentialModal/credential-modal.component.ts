@@ -4,8 +4,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ICredential } from 'src/app/models/interfaces/dashboard.interface';
 import { Store } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AddCredential, UserActionTypes } from 'src/app/store/user/user.actions';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-credential-modal',
@@ -26,6 +28,14 @@ export class CredentialModalComponent implements OnDestroy {
     public dialogRef: MatDialogRef<CredentialModalComponent>,
   ) {
     this.initializeForm();
+
+    this.actions$
+      .pipe(ofType(UserActionTypes.AddCredentialSuccess),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.dialogRef.close();
+      });
   }
 
   initializeForm() {
@@ -35,6 +45,15 @@ export class CredentialModalComponent implements OnDestroy {
       password: [this.data?.password || '', Validators.required],
       description: [this.data?.description || ''],
     });
+  }
+
+  submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.store.dispatch(new AddCredential(this.form.value));
   }
 
 

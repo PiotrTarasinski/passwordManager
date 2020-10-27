@@ -1,23 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { IState } from 'src/app/models/interfaces/store';
+import { SignIn } from 'src/app/store/user/user.actions';
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnDestroy {
+  private destroy$ = new Subject<boolean>();
 
   hidePassword = true;
   form: FormGroup;
 
   constructor(
+    private store: Store<IState>,
     private formBuilder: FormBuilder,
   ) {
     this.initializeForm();
-  }
-
-  ngOnInit() {
   }
 
   initializeForm() {
@@ -36,6 +39,12 @@ export class LoginPageComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
+
+    this.store.dispatch(new SignIn(this.form.value));
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
 }

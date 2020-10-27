@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=BSI
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - pgnetwork
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=tarasinski@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=Test.123
+    ports:
+      - '80:80'
+    networks:
+      - pgnetwork
+
+networks:
+  pgnetwork:

@@ -25,9 +25,9 @@
         <div class="col-12 col-xl-6">
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>Hash Algorithm</mat-label>
-            <mat-select disableOptionCentering formControlName="hashAlgorithm">
+            <mat-select disableOptionCentering formControlName="encryption">
               <mat-option *ngFor="let algorithm of hashAlgorithmEnum | keyvalue" value="{{ algorithm.value }}">
-                {{ algorithm.value }}
+                {{ algorithm.value.toUpperCase() }}
               </mat-option>
             </mat-select>
           </mat-form-field>

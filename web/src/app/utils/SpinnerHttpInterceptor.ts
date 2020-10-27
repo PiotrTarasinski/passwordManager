@@ -12,10 +12,13 @@ export class SpinnerHttpInterceptor implements HttpInterceptor {
   constructor(private spinner: NgxSpinnerService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const clonedRequest =
+      req.clone({ headers: req.headers.set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`) });
+
     setTimeout(() => this.spinner.show(), 0);
     this.count++;
 
-    return next.handle(req)
+    return next.handle(clonedRequest)
       .pipe(
         tap(),
         finalize(() => {

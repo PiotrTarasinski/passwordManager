@@ -2,14 +2,16 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { ICredential } from 'src/app/models/interfaces/dashboard.interface';
+import { ICredential, ICredentialsListResponse } from 'src/app/models/interfaces/dashboard.interface';
 import { IState } from 'src/app/models/interfaces/store';
 import { MatDialog } from '@angular/material/dialog';
 import { CredentialModalComponent } from 'src/app/shared/modals/CredentialModal/credential-modal.component';
 import Swal from 'sweetalert2';
+import { GetCredentials, UserActionTypes, RemoveCredential } from 'src/app/store/user/user.actions';
+import { takeUntil, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -23,6 +25,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] =
     [
+      'modificationDate',
       'url',
       'description',
       'username',
@@ -35,14 +38,37 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource(this.elementList);
   search = '';
   searchedBy = '';
+  visiblePasswords: string[] = [];
 
   constructor(
     private store: Store<IState>,
     private actions$: Actions,
     private dialog: MatDialog,
-  ) { }
+  ) {
+    this.actions$
+      .pipe(ofType(UserActionTypes.GetCredentialsSuccess),
+        takeUntil(this.destroy$),
+        pluck('payload')
+      )
+      .subscribe(({ passwords }: ICredentialsListResponse) => {
+        this.elementList = passwords;
+        this.dataSource.data = this.elementList;
+      });
+
+    this.actions$
+      .pipe(ofType(
+        UserActionTypes.AddCredentialSuccess,
+        UserActionTypes.RemoveCredentialSuccess,
+      ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.store.dispatch(new GetCredentials());
+      });
+  }
 
   ngOnInit() {
+    this.store.dispatch(new GetCredentials());
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
@@ -68,9 +94,14 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       confirmButtonColor: '#5a2aa2'
     }).then(({ value }) => {
       if (value) {
-        // @todo
+        this.store.dispatch(new RemoveCredential(id));
       }
     });
+  }
+
+  togglePassword({ id }: ICredential) {
+    const index = this.visiblePasswords.indexOf(id);
+    index === -1 ? this.visiblePasswords.push(id) : this.visiblePasswords.splice(index, 1);
   }
 
   ngOnDestroy(): void {

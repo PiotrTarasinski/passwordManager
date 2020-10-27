@@ -23,3 +23,13 @@
     color: #fff;
   }
 }
+
+.password-input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+input[type="password"].password-input {
+  font-family: 'DejaVu Sans Mono', monospace;
+}
