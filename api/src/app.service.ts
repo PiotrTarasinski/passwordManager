@@ -105,6 +105,7 @@ export class AppService {
             salt,
           ),
           salt,
+          isPasswordKeptAsHash: password.encryption === 'hmac' ? true : false,
         },
         {
           where: {
