@@ -9,7 +9,7 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
-      username: {
+      login: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
@@ -26,12 +26,12 @@ module.exports = {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },

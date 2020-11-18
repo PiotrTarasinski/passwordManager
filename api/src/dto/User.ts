@@ -1,13 +1,13 @@
 export interface RegisterUserDTO {
-  username: string;
+  login: string;
   password: string;
   encryption: 'sha512' | 'hmac';
 }
 
 export interface CreatePasswordDTO {
-  url: string;
+  webAddress: string;
   description: string;
-  username: string;
+  login: string;
   password: string;
   key: string;
 }
@@ -17,6 +17,11 @@ export interface EditPasswordDTO extends CreatePasswordDTO {
 }
 
 export interface UserCredentials {
-  username: string;
+  login: string;
   id: number;
+}
+
+export interface PaginationDTO {
+  count: number;
+  page: number;
 }

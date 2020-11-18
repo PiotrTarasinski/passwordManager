@@ -14,10 +14,12 @@ import { Password } from './Password';
 
 interface UserAttributes {
   id: number;
-  username: string;
+  login: string;
   password: string;
   salt: string;
   isPasswordKeptAsHash: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 type UserCreationAttributes = Optional<UserAttributes, 'id'>;
@@ -25,7 +27,7 @@ type UserCreationAttributes = Optional<UserAttributes, 'id'>;
 export class User extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
   public id!: number;
-  public username!: string;
+  public login!: string;
   public password!: string;
   public salt!: string;
   public isPasswordKeptAsHash!: boolean;
@@ -61,7 +63,7 @@ export default function (sequelize: Sequelize): typeof User {
         unique: true,
         primaryKey: true,
       },
-      username: {
+      login: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,

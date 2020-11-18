@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 import * as crypto from 'crypto';
-import * as CryptoJS from 'crypto-js';
 import { User } from 'src/database/models/User';
-import { UsersService } from 'src/user/users.service';
+import { UsersService } from '../user/users.service';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +11,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.appService.findOne(username);
+  async validateUser(login: string, password: string): Promise<User | null> {
+    const user = await this.appService.findOne(login);
     const encryption = user.isPasswordKeptAsHash ? 'hmac' : 'sha512';
     if (
       user &&
@@ -25,9 +24,10 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = { username: user.username, id: user.id };
+    const payload = { login: user.login, id: user.id };
     return {
-      token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload),
+      key: user.password.substr(0, 16),
     };
   }
 
@@ -48,33 +48,29 @@ export class AuthService {
           .digest('hex');
   }
 
-  encodePassword(password: string, masterPassword: string): string {
-    const key16 = CryptoJS.MD5(masterPassword).toString().substr(0, 16);
-
-    const key = CryptoJS.enc.Utf8.parse(key16);
-    const iv = CryptoJS.enc.Utf8.parse(key16);
-
-    return CryptoJS.AES.encrypt(
-      password, key, {
-        keySize: 16,
-        iv,
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-      }).toString();
+  encodePassword(password: string, key: string): string {
+    const iv = 'V8MMkXs5pkVxzUr7';
+    const newKey = crypto
+      .createHash('md5')
+      .update(key)
+      .digest('base64')
+      .substr(0, 16);
+    const cipher = crypto.createCipheriv('aes-128-cbc', newKey, iv);
+    let buffer = cipher.update(password, 'utf8', 'hex');
+    buffer += cipher.final('hex');
+    return buffer;
   }
 
-  decodePassword(encryptedPassword: string, masterPassword: string): string {
-    const key16 = CryptoJS.MD5(masterPassword).toString().substr(0, 16);
-
-    const key = CryptoJS.enc.Utf8.parse(key16);
-    const iv = CryptoJS.enc.Utf8.parse(key16);
-
-    return CryptoJS.AES.decrypt(
-      encryptedPassword, key, {
-        keySize: 16,
-        iv,
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-      }).toString(CryptoJS.enc.Utf8) 
+  decodePassword(password: string, key: string): string {
+    const iv = 'V8MMkXs5pkVxzUr7';
+    const newKey = crypto
+      .createHash('md5')
+      .update(key)
+      .digest('base64')
+      .substr(0, 16);
+    const cipher = crypto.createDecipheriv('aes-128-cbc', newKey, iv);
+    let buffer = cipher.update(password, 'hex', 'utf8');
+    buffer += cipher.final('utf8');
+    return buffer;
   }
 }

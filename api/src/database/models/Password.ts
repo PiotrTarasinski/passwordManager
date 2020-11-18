@@ -11,9 +11,11 @@ interface PasswordAttributes {
   id: number;
   password: string;
   userId: number;
-  url: string;
+  webAddress: string;
   description: string;
-  username: string;
+  login: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 type PasswordCreationAttributes = Optional<PasswordAttributes, 'id'>;
@@ -24,9 +26,9 @@ export class Password
   public id!: number;
   public password!: string;
   public userId!: number;
-  public url!: string;
+  public webAddress!: string;
   public description!: string;
-  public username!: string;
+  public login!: string;
 
   public getUser!: BelongsToGetAssociationMixin<User>;
 
@@ -62,7 +64,7 @@ export default function (sequelize): typeof Password {
           key: 'id',
         },
       },
-      url: {
+      webAddress: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -70,7 +72,7 @@ export default function (sequelize): typeof Password {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      username: {
+      login: {
         type: DataTypes.STRING,
         allowNull: false,
       },

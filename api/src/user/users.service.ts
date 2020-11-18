@@ -1,28 +1,33 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import db from 'src/database/initializeDatabase';
-import { UserCredentials } from 'src/dto/User';
+import { PaginationDTO, UserCredentials } from 'src/dto/User';
+import db from '../database/initializeDatabase';
 
 @Injectable()
 export class UsersService {
-  async findOne(username: string) {
+  async findOne(login: string) {
     return await db.User.findOne({
       where: {
-        username,
+        login,
       },
     });
   }
 
-  async getPasswords(user: UserCredentials) {
+  async getPasswords(user: UserCredentials, pagination: PaginationDTO) {
+    const { count, page } = pagination;
     const dbUser = await db.User.findOne({
       where: {
         id: user.id,
       },
     });
-    const passwords = await dbUser.getPasswords();
-    return { passwords };
+    const passwords = await dbUser.getPasswords({
+      offset: page * count,
+      limit: count,
+    });
+    const dbCount = await dbUser.countPasswords();
+    return { passwords, count: dbCount };
   }
 
-  async deletePassword(id: string) {
+  async deletePassword(id: number) {
     await (await db.Password.findByPk(id)).destroy().catch(() => {
       throw new InternalServerErrorException();
     });

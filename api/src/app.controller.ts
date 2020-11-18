@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Req, UseGuards, Get, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -6,6 +6,7 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 import {
   CreatePasswordDTO,
   EditPasswordDTO,
+  PaginationDTO,
   RegisterUserDTO,
 } from './dto/User';
 import { UsersService } from './user/users.service';
@@ -20,8 +21,7 @@ export class AppController {
 
   @Post('auth/register')
   async registerUser(@Body() user: RegisterUserDTO) {
-    await this.appService.createUser(user);
-    return {};
+    return await this.appService.createUser(user);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -38,36 +38,35 @@ export class AppController {
     body: {
       oldPassword: string;
       password: string;
+      key: string;
       encryption: 'hmac' | 'sha512';
     },
   ) {
-    return this.appService.editUser(req.user, body);
+    return await this.appService.editUser(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('password/create')
   async createPassword(@Req() req, @Body() body: CreatePasswordDTO) {
-    this.appService.createPassword(req.user, body);
-    return {};
+    return await this.appService.createPassword(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('password/edit')
-  async editPassword(@Req() req, @Body() body: EditPasswordDTO) {
-    this.appService.editPassword(req.user, body);
-    return {};
+  async editPassword(@Req() req, @Body() body: Partial<EditPasswordDTO>) {
+    return await this.appService.editPassword(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('password')
-  async decodePassword(@Req() req, @Query() query: { id: string }) {
-    this.usersService.deletePassword(query.id);
+  async deletePassword(@Body() body: { id: number }) {
+    await this.usersService.deletePassword(Number(body.id));
     return {};
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('password')
-  async getPasswords(@Req() req) {
-    return this.usersService.getPasswords(req.user);
+  @Post('password')
+  async getPasswords(@Req() req, @Body() body: PaginationDTO) {
+    return this.usersService.getPasswords(req.user, body);
   }
 }

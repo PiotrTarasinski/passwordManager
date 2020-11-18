@@ -15,7 +15,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=tarasinski@gmail.com
+      - PGADMIN_DEFAULT_EMAIL=tokarzewskis@gmail.com
       - PGADMIN_DEFAULT_PASSWORD=Test.123
     ports:
       - '80:80'

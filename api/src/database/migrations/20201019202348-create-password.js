@@ -19,7 +19,7 @@ module.exports = {
           model: 'users',
         },
       },
-      url: {
+      webAddress: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      username: {
+      login: {
         type: Sequelize.STRING,
         allowNull: false,
       },
