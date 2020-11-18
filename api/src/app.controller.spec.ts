@@ -29,55 +29,68 @@ describe('AppController', () => {
     db;
   });
 
-  describe('getHello', () => {
-    it('should create and delete new password', async () => {
+  describe('api tests', () => {
+    it('should encode and decode password', async () => {
+      const authService = app.get<AuthService>(AuthService);
+
+      const password = 'zx1Q10.C';
+      const key = 'key';
+      const encodedPassword = authService.encodePassword(password, key);
+      const decodedPassword = authService.decodePassword(encodedPassword, key);
+
+      expect(decodedPassword).toBe(password);
+    });
+
+    it('should create a new user', async () => {
+      const appController = app.get<AppController>(AppController);
+      const appService = app.get<AuthService>(AuthService);
+      const user = await appController.registerUser({
+        login: 'username',
+        encryption: 'hmac',
+        password: 'password',
+      });
+      const { id, createdAt, updatedAt, salt, ...result } = user.get();
+      expect(result).toEqual({
+        login: 'username',
+        password: appService.hashPassword('hmac', 'password', salt),
+        isPasswordKeptAsHash: true,
+      });
+
+      await user.destroy();
+      expect(await db.Password.findByPk(user.id)).toBe(null);
+    });
+
+    it('should add a new password to wallet', async () => {
       const appController = app.get<AppController>(AppController);
       const authService = app.get<AuthService>(AuthService);
       const user = await db.User.create({
-        isPasswordKeptAsHash: true,
-        login: 'test_test_user',
-        password: authService.hashPassword('hmac', 'test', 'test'),
+        isPasswordKeptAsHash: false,
+        login: 'username',
+        password: authService.hashPassword('sha512', 'password', 'salt'),
         salt: 'test',
       });
       const password = await appController.createPassword(
         { user: { id: user.id } },
         {
-          description: 'test',
-          key: 'test',
-          login: 'test',
-          password: 'test',
-          webAddress: 'test',
+          description: 'test password',
+          key: 'password',
+          login: 'username',
+          password: 'password',
+          webAddress: 'www.test-site.com',
         },
       );
       const { createdAt, updatedAt, id, ...result } = password.get();
       expect(result).toEqual({
         userId: user.id,
-        description: 'test',
-        login: 'test',
-        password: authService.encodePassword('test', 'test'),
-        webAddress: 'test',
+        description: 'test password',
+        login: 'username',
+        password: authService.encodePassword('password', 'password'),
+        webAddress: 'www.test-site.com',
       });
+
       await appController.deletePassword({ id: password.id });
       await user.destroy();
       expect(await db.Password.findByPk(password.id)).toBe(null);
-    });
-
-    it('should create and delete new user', async () => {
-      const appController = app.get<AppController>(AppController);
-      const appService = app.get<AuthService>(AuthService);
-      const user = await appController.registerUser({
-        login: 'test_test',
-        encryption: 'sha512',
-        password: 'test',
-      });
-      const { id, createdAt, updatedAt, salt, ...result } = user.get();
-      expect(result).toEqual({
-        login: 'test_test',
-        password: appService.hashPassword('sha512', 'test', salt),
-        isPasswordKeptAsHash: false,
-      });
-      await user.destroy();
-      expect(await db.Password.findByPk(user.id)).toBe(null);
     });
 
     it('should edit a password', async () => {
@@ -85,76 +98,77 @@ describe('AppController', () => {
       const authService = app.get<AuthService>(AuthService);
       const user = await db.User.create({
         isPasswordKeptAsHash: true,
-        login: 'test_test_user',
-        password: authService.hashPassword('hmac', 'test', 'test'),
-        salt: 'test',
+        login: 'username',
+        password: authService.hashPassword('hmac', 'password', 'salt'),
+        salt: 'salt',
       });
       const password = await appController.createPassword(
         { user: { id: user.id } },
         {
-          description: 'test',
-          key: 'test',
-          login: 'test',
-          password: 'test',
-          webAddress: 'test',
+          description: 'test password',
+          key: 'password',
+          login: 'username',
+          password: 'password',
+          webAddress: 'www.test-site.com',
         },
       );
       const { id } = password.get();
       await appController.editPassword(
         { user: { id: user.id } },
-        { id, key: 'test', login: 'testorinho', password: 'testo' },
+        { id, key: 'password', login: 'username2', password: 'password2' },
       );
       const { createdAt, updatedAt, id: id2, ...result } = (
         await db.Password.findByPk(id)
       ).get();
       expect(result).toEqual({
         userId: user.id,
-        description: 'test',
-        login: 'testorinho',
-        password: authService.encodePassword('testo', 'test'),
-        webAddress: 'test',
+        description: 'test password',
+        login: 'username2',
+        password: authService.encodePassword('password2', 'password'),
+        webAddress: 'www.test-site.com',
       });
+
       await appController.deletePassword({ id: password.id });
       await user.destroy();
       expect(await db.Password.findByPk(password.id)).toBe(null);
     });
 
-    it('should edit a user and decode passwords', async () => {
+    it('should change user main password and decode passwords in wallet', async () => {
       const appController = app.get<AppController>(AppController);
       const appService = app.get<AuthService>(AuthService);
       const authService = app.get<AuthService>(AuthService);
       const user = await db.User.create({
         isPasswordKeptAsHash: true,
-        login: 'test_test_user',
-        password: authService.hashPassword('hmac', 'test', 'test'),
-        salt: 'test',
+        login: 'username',
+        password: authService.hashPassword('hmac', 'password', 'salt'),
+        salt: 'salt',
       });
       const { createdAt, updatedAt, id, ...result } = (
         await appController.createPassword(
           { user: { id: user.id } },
           {
-            description: 'test',
-            key: 'test',
-            login: 'test',
-            password: 'test',
-            webAddress: 'test',
+            description: 'test password',
+            key: 'password',
+            login: 'username',
+            password: 'password',
+            webAddress: 'www.test-site.com',
           },
         )
       ).get();
       expect(result).toEqual({
         userId: user.id,
-        description: 'test',
-        login: 'test',
-        password: authService.encodePassword('test', 'test'),
-        webAddress: 'test',
+        description: 'test password',
+        login: 'username',
+        password: authService.encodePassword('password', 'password'),
+        webAddress: 'www.test-site.com',
       });
       await appController.edit(
         { user: { id: user.id } },
         {
-          key: 'test',
+          key: 'password',
           encryption: 'hmac',
-          oldPassword: 'test',
-          password: 'testtest',
+          oldPassword: 'password',
+          password: 'password2',
         },
       );
       const {
@@ -165,8 +179,8 @@ describe('AppController', () => {
         ...rest
       } = (await db.User.findByPk(user.id)).get();
       expect(rest).toEqual({
-        login: 'test_test_user',
-        password: appService.hashPassword('hmac', 'testtest', salt),
+        login: 'username',
+        password: appService.hashPassword('hmac', 'password2', salt),
         isPasswordKeptAsHash: true,
       });
       const {
@@ -177,11 +191,12 @@ describe('AppController', () => {
       } = (await db.Password.findByPk(id)).get();
       expect(newPassRest).toEqual({
         userId: user.id,
-        description: 'test',
-        login: 'test',
-        password: authService.encodePassword('test', 'testtest'),
-        webAddress: 'test',
+        description: 'test password',
+        login: 'username',
+        password: authService.encodePassword('password', 'password2'),
+        webAddress: 'www.test-site.com',
       });
+
       await appController.deletePassword({ id });
       await user.destroy();
       expect(await db.Password.findByPk(id)).toBe(null);
