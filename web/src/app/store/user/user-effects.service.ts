@@ -21,7 +21,7 @@ import {
   RemoveCredentialError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
-import { ISignUpRequest, ISignInResponse, IUserData, IChangePasswordRequest } from 'src/app/models/interfaces/app.interface';
+import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
 import { combineLatest, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
@@ -52,8 +52,7 @@ export class UserEffects {
     ofType(UserActionTypes.SignUp),
     pluck('payload'),
     switchMap((payload: ISignUpRequest) => {
-      const params = setHttpParams({ ...payload });
-      return this.http.post('http://localhost:4000/auth/register', params);
+      return this.http.post('/api/users', payload);
     }),
     switchMap(() =>
       this.handler.handleSuccess(new SignUpSuccess())
@@ -69,21 +68,22 @@ export class UserEffects {
   @Effect() SignIn$ = this.actions$.pipe(
     ofType(UserActionTypes.SignIn),
     pluck('payload'),
-    switchMap((payload: IUserData) => {
-      const params = setHttpParams({ ...payload });
+    switchMap((payload: ISignInRequest) => {
       return combineLatest(
-        this.http.post('http://localhost:4000/auth/login', params),
+        this.http.post('/api/users/login', payload),
         of(payload));
     }),
-    switchMap(([{ token }, { username, password }]: [ISignInResponse, IUserData]) => {
+    switchMap(([{ user: { token, lastSuccessLogin, lastFailureLogin }}, { user: {email, password} }]: [ISignInResponse, ISignInRequest]) => {
       localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
+      localStorage.setItem('email', email);
       localStorage.setItem('password', password);
+      localStorage.setItem('lastSuccessLogin', lastSuccessLogin);
+      localStorage.setItem('lastFailureLogin', lastFailureLogin);
 
       this.router.navigateByUrl('/dashboard');
 
       return this.handler.handleSuccess(
-        new SignInSuccess({ username, password }),
+        new SignInSuccess({ isLoggedIn: true, email, password, lastSuccessLogin, lastFailureLogin }),
         'Logged In Successfully'
         );
     }
@@ -134,10 +134,11 @@ export class UserEffects {
   @Effect() GetCredentials$ = this.actions$.pipe(
     ofType(UserActionTypes.GetCredentials),
     switchMap(() => {
-      return this.http.get('http://localhost:4000/password');
+      return this.http.get('/api/password');
     }),
-    switchMap(({passwords}: ICredentialsListResponse) => {
-      passwords = passwords.map(el => ({...el, password: decryptPassword(el.password)}));
+    switchMap(() => {
+      // passwords = passwords.map(el => ({...el, password: decryptPassword(el.password)}));
+      const passwords = [];
       return this.handler.handleSuccess(new GetCredentialsSuccess({passwords}));
     }
     ),

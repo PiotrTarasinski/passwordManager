@@ -1,6 +1,7 @@
 export interface IUserState {
   isLoggedIn: boolean;
-  id?: string;
-  username?: string;
+  email?: string;
   password?: string;
+  lastSuccessLogin?: string;
+  lastFailureLogin?: string;
 }

@@ -8,26 +8,26 @@
       <div class="row">
         <div class="col-12 col-xl-6">
           <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Username</mat-label>
-            <mat-icon matPrefix class="mr-2">account_circle</mat-icon>
+            <mat-label>Email</mat-label>
+            <mat-icon matPrefix class="mr-2">email</mat-icon>
             <input
               matInput
-              formControlName="username"
-              name="prevent_autofill_username"
-              placeholder="Username"
+              formControlName="email"
+              name="prevent_autofill_email"
+              placeholder="Email"
               autocomplete="new-password"
             />
-            <mat-error *ngIf="form.controls.username.invalid">
-              {{ form.controls.username | inputError }}
+            <mat-error *ngIf="form.controls.email.invalid">
+              {{ form.controls.email | inputError }}
             </mat-error>
           </mat-form-field>
         </div>
         <div class="col-12 col-xl-6">
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>Hash Algorithm</mat-label>
-            <mat-select disableOptionCentering formControlName="encryption">
+            <mat-select disableOptionCentering formControlName="type">
               <mat-option *ngFor="let algorithm of hashAlgorithmEnum | keyvalue" value="{{ algorithm.value }}">
-                {{ algorithm.value.toUpperCase() }}
+                {{ algorithm.value }}
               </mat-option>
             </mat-select>
           </mat-form-field>

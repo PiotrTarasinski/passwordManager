@@ -25,8 +25,9 @@ export class LoginPageComponent implements OnDestroy {
 
   initializeForm() {
     this.form = this.formBuilder.group({
-      username: ['', Validators.compose([
-        Validators.required
+      email: ['', Validators.compose([
+        Validators.required,
+        Validators.email
       ])],
       password: ['', Validators.compose([
         Validators.required
@@ -40,7 +41,7 @@ export class LoginPageComponent implements OnDestroy {
       return;
     }
 
-    this.store.dispatch(new SignIn(this.form.value));
+    this.store.dispatch(new SignIn({ user: { ...this.form.value } }));
   }
 
   ngOnDestroy(): void {

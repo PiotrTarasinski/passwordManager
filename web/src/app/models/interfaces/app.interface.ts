@@ -5,18 +5,26 @@ export interface IEnvironment {
 }
 
 export interface ISignUpRequest {
-  username: string;
-  password: string;
-  encryption: HashAlgorithmEnum;
+  user: {
+    email: string;
+    password: string;
+    type: HashAlgorithmEnum;
+  }
 }
 
-export interface IUserData {
-  username: string;
-  password: string;
+export interface ISignInRequest {
+  user: {
+    email: string;
+    password: string;
+  }
 }
 
 export interface ISignInResponse {
-  token: string;
+  user: {
+    token: string;
+    lastSuccessLogin?: string;
+    lastFailureLogin?: string;
+  }
 }
 
 export interface IChangePasswordRequest {

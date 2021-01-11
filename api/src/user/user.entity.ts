@@ -18,12 +18,6 @@ export class UserEntity {
   @IsEmail()
   email: string;
 
-  @Column({ default: '' })
-  bio: string;
-
-  @Column({ default: '' })
-  image: string;
-
   @Column()
   password: string;
 

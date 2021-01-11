@@ -1,12 +1,13 @@
 import { Action } from '@ngrx/store';
 import {
   ISignUpRequest,
-  IUserData,
   IChangePasswordRequest,
+  ISignInRequest,
 } from 'src/app/models/interfaces/app.interface';
 import {
   IAddCredentialRequest, ICredentialsListResponse, IEditCredentialRequest
 } from 'src/app/models/interfaces/dashboard.interface';
+import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
 
 export enum UserActionTypes {
   SignUp = '[User] Sign Up',
@@ -60,13 +61,13 @@ export class SignUpError implements Action {
 export class SignIn implements Action {
   readonly type = UserActionTypes.SignIn;
 
-  constructor(public payload: IUserData) { }
+  constructor(public payload: ISignInRequest) { }
 }
 
 export class SignInSuccess implements Action {
   readonly type = UserActionTypes.SignInSuccess;
 
-  constructor(public payload: IUserData) { }
+  constructor(public payload: IUserState) { }
 }
 
 export class SignInError implements Action {

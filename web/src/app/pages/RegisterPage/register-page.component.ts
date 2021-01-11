@@ -53,10 +53,11 @@ export class RegisterPageComponent implements OnDestroy {
 
   initializeForm() {
     this.form = this.formBuilder.group({
-      username: ['', Validators.compose([
-        Validators.required
+      email: ['', Validators.compose([
+        Validators.required,
+        Validators.email
       ])],
-      encryption: [HashAlgorithmEnum.SHA512, Validators.compose([
+      type: [HashAlgorithmEnum.SHA512, Validators.compose([
         Validators.required
       ])],
       password: ['', Validators.compose([
@@ -74,7 +75,7 @@ export class RegisterPageComponent implements OnDestroy {
       return;
     }
 
-    this.store.dispatch(new SignUp(this.form.value));
+    this.store.dispatch(new SignUp({user: {...this.form.value}}));
   }
 
   ngOnDestroy(): void {

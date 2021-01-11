@@ -78,8 +78,8 @@ export class UserController {
       await this.userService.setUserSuccessLoginData(_user);
       session.password = loginUserDto.password;
       const token = await this.userService.generateJWT(_user);
-      const { email, bio, image, lastFailureLogin, lastSuccessLogin } = _user;
-      const user = { email, token, bio, image, lastFailureLogin, lastSuccessLogin };
+      const { email, lastFailureLogin, lastSuccessLogin } = _user;
+      const user = { email, token, lastFailureLogin, lastSuccessLogin };
       return { user }
     } catch (err) {
       console.log(err);

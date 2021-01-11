@@ -1,4 +1,4 @@
 export enum HashAlgorithmEnum {
-  SHA512 = 'sha512',
-  HMAC = 'hmac',
+  SHA512 = 'SHA512',
+  HMAC = 'HMAC',
 }
