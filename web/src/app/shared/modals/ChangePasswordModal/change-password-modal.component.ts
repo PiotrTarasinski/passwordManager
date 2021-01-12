@@ -42,7 +42,7 @@ export class ChangePasswordModalComponent implements OnDestroy {
   initializeForm() {
     this.form = this.formBuilder.group({
       oldPassword: ['', Validators.required],
-      encryption: [HashAlgorithmEnum.SHA512, Validators.required],
+      type: [HashAlgorithmEnum.SHA512, Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
     });

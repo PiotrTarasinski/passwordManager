@@ -62,14 +62,15 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         pluck('payload')
       )
       .subscribe(({ id, password }: ICredential) => {
-        this.elementList = this.elementList.map(el => el.id === id ? { ...el, password } : el);
-        this.dataSource.data = this.elementList;
-        this.visiblePasswords.push(id);
+          this.elementList = this.elementList.map(el => el.id === id ? { ...el, password } : el);
+          this.dataSource.data = this.elementList;
+          this.visiblePasswords.push(id);
       });
 
     this.actions$
       .pipe(ofType(
         UserActionTypes.AddCredentialSuccess,
+        UserActionTypes.EditCredentialSuccess,
         UserActionTypes.RemoveCredentialSuccess,
       ),
         takeUntil(this.destroy$),
@@ -114,7 +115,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   togglePassword({ id }: ICredential) {
     const index = this.visiblePasswords.indexOf(id);
-    // index === -1 ? this.visiblePasswords.push(id) : this.visiblePasswords.splice(index, 1);
     index === -1 ? this.store.dispatch(new DecryptCredential(id)) : this.visiblePasswords.splice(index, 1);
   }
 

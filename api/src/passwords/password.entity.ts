@@ -8,10 +8,16 @@ export class PasswordEntity {
     id: number;
 
     @Column()
-    password: string;
+    url: string;
+
+    @Column()
+    username: string;
 
     @Column()
     description: string;
+
+    @Column()
+    password: string;
 
     @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP" })
     created: Date;

@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 export class CreatePasswordDto {
   @ApiProperty()
-  readonly password: string;
+  readonly url: string;
   @ApiProperty()
   readonly description: string;
+  @ApiProperty()
+  readonly username: string;
+  @ApiProperty()
+  readonly password: string;
 }

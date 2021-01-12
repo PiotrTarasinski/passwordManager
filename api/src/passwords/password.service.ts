@@ -175,7 +175,7 @@ export class PasswordService {
     }
 
     async update(dto: UpdatePasswordDto, session: { password: string }, user?: any): Promise<CreatePasswordResponse> {
-        const { id, password, description } = dto;
+        const { id, url, username, description, password } = dto;
         let toUpdate = await this.passwordRepository.findOne(id);
 
         if (!session.password) {
@@ -193,9 +193,11 @@ export class PasswordService {
 
 
         let passwordEntity = new PasswordEntity();
-        passwordEntity.password = password ? CryptoAES.encrypt(password, user.password).toString() : null;
-        passwordEntity.description = description || null;
         passwordEntity.id = toUpdate.id;
+        passwordEntity.url = url;
+        passwordEntity.description = description;
+        passwordEntity.username = username;
+        passwordEntity.password = password ? CryptoAES.encrypt(password, user.password).toString() : null;
 
 
         const savedPassword = await this.passwordRepository.save(passwordEntity);
@@ -210,7 +212,7 @@ export class PasswordService {
 
     async create(dto: CreatePasswordDto, session: { password: string }, user?: any): Promise<CreatePasswordResponse> {
 
-        const { password, description } = dto;
+        const { url, username, description, password } = dto;
         if (!session.password) {
             throw new HttpException({ message: 'Validation failed. Please log out.' }, HttpStatus.UNAUTHORIZED);
         }
@@ -224,9 +226,11 @@ export class PasswordService {
         }
 
         let passwordEntity = new PasswordEntity();
-        passwordEntity.password = CryptoAES.encrypt(password, user.password).toString();
-        passwordEntity.description = description;
         passwordEntity.author = user;
+        passwordEntity.url = url;
+        passwordEntity.description = description;
+        passwordEntity.username = username;
+        passwordEntity.password = CryptoAES.encrypt(password, user.password).toString();
 
         const savedPassword = await this.passwordRepository.save(passwordEntity);
 

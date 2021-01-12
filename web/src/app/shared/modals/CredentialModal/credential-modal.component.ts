@@ -6,8 +6,8 @@ import { Store } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AddCredential, UserActionTypes } from 'src/app/store/user/user.actions';
-import { takeUntil } from 'rxjs/operators';
+import { AddCredential, DecryptCredential, EditCredential, UserActionTypes } from 'src/app/store/user/user.actions';
+import { pluck, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-credential-modal',
@@ -30,11 +30,23 @@ export class CredentialModalComponent implements OnDestroy {
     this.initializeForm();
 
     this.actions$
-      .pipe(ofType(UserActionTypes.AddCredentialSuccess),
+      .pipe(ofType(
+        UserActionTypes.AddCredentialSuccess,
+        UserActionTypes.EditCredentialSuccess,
+      ),
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
         this.dialogRef.close();
+      });
+
+      this.actions$
+      .pipe(ofType(UserActionTypes.DecryptCredentialSuccess),
+        takeUntil(this.destroy$),
+        pluck('payload')
+      )
+      .subscribe(({ password }: ICredential) => {
+          this.form.controls.password.setValue(password);
       });
   }
 
@@ -45,6 +57,10 @@ export class CredentialModalComponent implements OnDestroy {
       password: [this.data?.password || '', Validators.required],
       description: [this.data?.description || ''],
     });
+
+    if (this.data) {
+      this.store.dispatch(new DecryptCredential(this.data?.id));
+    }
   }
 
   submit() {
@@ -53,7 +69,9 @@ export class CredentialModalComponent implements OnDestroy {
       return;
     }
 
-    this.store.dispatch(new AddCredential(this.form.value));
+    this.data ? 
+      this.store.dispatch(new EditCredential({ id: this.data?.id, ...this.form.value }))
+      : this.store.dispatch(new AddCredential(this.form.value));
   }
 
 

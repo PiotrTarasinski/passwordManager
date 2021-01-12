@@ -2,9 +2,9 @@ export interface ICredential {
   id: string;
   created: Date;
   updated: Date;
-  url?: string;
+  url: string;
   description?: string;
-  username?: string;
+  username: string;
   password: string;
 }
 

@@ -20,7 +20,9 @@ import {
   RemoveCredentialSuccess,
   RemoveCredentialError,
   DecryptCredentialSuccess,
-  DecryptCredentialError
+  DecryptCredentialError,
+  EditCredentialSuccess,
+  EditCredentialError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
 import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
@@ -30,7 +32,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { Store, select } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { selectUser } from '../selectors/selectUser.selector';
-import { IAddCredentialRequest, ICredential } from 'src/app/models/interfaces/dashboard.interface';
+import { IAddCredentialRequest, ICredential, IEditCredentialRequest } from 'src/app/models/interfaces/dashboard.interface';
 
 @Injectable()
 export class UserEffects {
@@ -184,18 +186,38 @@ export class UserEffects {
     ),
   );
 
+  @Effect() EditCredential$ = this.actions$.pipe(
+    ofType(UserActionTypes.EditCredential),
+    pluck('payload'),
+    switchMap((payload: IEditCredentialRequest) => 
+      this.http.post('/api/password/update', payload)
+    ),
+    switchMap(() =>
+      this.handler.handleSuccess(
+        new EditCredentialSuccess(),
+        'Credential Edited Successfully'
+      )
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new EditCredentialError(err),
+        'Something went wrong'
+      )
+    ),
+  );
+
   @Effect() RemoveCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.RemoveCredential),
     pluck('payload'),
-    switchMap((id: string) => {
-      return this.http.delete('http://localhost:4000/password', { params: { id } });
-    }),
-    switchMap(() => {
-      return this.handler.handleSuccess(
+    switchMap((id: string) => 
+      this.http.delete(`api/password/delete/${id}`)
+    ),
+    switchMap(() => 
+      this.handler.handleSuccess(
         new RemoveCredentialSuccess(),
         'Removed Credential Successfully'
-        );
-    }
+      )
     ),
     catchError((err, caught) =>
       this.handler.handleError(

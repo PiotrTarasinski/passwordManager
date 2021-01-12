@@ -12,7 +12,7 @@
     {{ user?.email }}
   </button>
 
-  <mat-menu #menu="matMenu" class="mt-3 mr-1">
+  <mat-menu #menu="matMenu" class="mt-3" xPosition="before">
     <button mat-menu-item (click)="openChangePasswordModal()">
       <mat-icon>account_box</mat-icon> My Profile
     </button>
