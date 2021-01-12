@@ -90,3 +90,13 @@ th.mat-sort-header-sorted {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
+.password-input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+input[type="password"].password-input {
+  font-family: 'DejaVu Sans Mono', monospace;
+}

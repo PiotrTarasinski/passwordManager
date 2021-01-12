@@ -4,6 +4,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 // MODALS
 import { CredentialModalComponent } from './modals/CredentialModal/credential-modal.component';
 import { ChangePasswordModalComponent } from './modals/ChangePasswordModal/change-password-modal.component';
+import { ShareCredentialModalComponent } from './modals/ShareCredentialModal/share-credential-modal.component';
+import { ActionLogModalComponent } from './modals/ActionLogModal/action-log-modal.component';
 
 // PIPES
 import { FormatDatePipe } from './pipes/format-date.pipe';
@@ -35,7 +37,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 
 const COMPONENTS = [
   NavbarComponent,
@@ -44,6 +46,8 @@ const COMPONENTS = [
 const MODALS = [
   CredentialModalComponent,
   ChangePasswordModalComponent,
+  ShareCredentialModalComponent,
+  ActionLogModalComponent,
 ];
 
 const PIPES = [

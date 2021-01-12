@@ -1,12 +1,12 @@
 <mat-toolbar class="navbar mat-elevation-z2">
   <a class="brand-logo" routerLink="{{ user?.isLoggedIn ? '/dashboard' : '/home' }}">
-    <img src="assets/logo.png" alt="brand-logo"/>
+    <img src="assets/logo.png" alt="brand-logo" />
   </a>
   <div class="spacer"></div>
-  <ng-container *ngIf="!user?.isLoggedIn"> 
+  <ng-container *ngIf="!user?.isLoggedIn">
     <button mat-flat-button class="action-btn primary mr-2" routerLink="/login">Sign In</button>
     <button mat-flat-button class="action-btn pink" routerLink="/register">Create Account</button>
-  </ng-container> 
+  </ng-container>
   <button mat-button *ngIf="user?.isLoggedIn" [matMenuTriggerFor]="menu" class="avatar">
     <mat-icon class="mr-2">account_circle</mat-icon>
     {{ user?.email }}
@@ -15,6 +15,9 @@
   <mat-menu #menu="matMenu" class="mt-3" xPosition="before">
     <button mat-menu-item (click)="openChangePasswordModal()">
       <mat-icon>account_box</mat-icon> My Profile
+    </button>
+    <button mat-menu-item (click)="openActionLogModal()">
+      <mat-icon>history</mat-icon> Action Log
     </button>
     <button mat-menu-item (click)="logout()">
       <mat-icon>exit_to_app</mat-icon> Logout

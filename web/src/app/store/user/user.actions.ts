@@ -8,6 +8,7 @@ import {
   IAddCredentialRequest,
   ICredential,
   IEditCredentialRequest,
+  IShareCredentialRequest,
 } from 'src/app/models/interfaces/dashboard.interface';
 import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
 
@@ -39,6 +40,10 @@ export enum UserActionTypes {
   DecryptCredentialSuccess = '[Credential] Decrypt Credential Success',
   DecryptCredentialError = '[Credential] Decrypt Credential Error',
 
+  ShareCredential = '[Credential] Share Credential',
+  ShareCredentialSuccess = '[Credential] Share Credential Success',
+  ShareCredentialError = '[Credential] Share Credential Error',
+
   EditCredential = '[Credential] Edit Credential',
   EditCredentialSuccess = '[Credential] Edit Credential Success',
   EditCredentialError = '[Credential] Edit Credential Error',
@@ -46,6 +51,10 @@ export enum UserActionTypes {
   RemoveCredential = '[Credential] Remove Credential',
   RemoveCredentialSuccess = '[Credential] Remove Credential Success',
   RemoveCredentialError = '[Credential] Remove Credential Error',
+
+  GetActionLog = '[ActionLog] Get Action Log',
+  GetActionLogSuccess = '[ActionLog] Get Action Log Success',
+  GetActionLogError = '[ActionLog] Get Action Log Error',
 }
 
 export class SignUp implements Action {
@@ -156,6 +165,22 @@ export class DecryptCredentialError implements Action {
   constructor(public payload: Error) { }
 }
 
+export class ShareCredential implements Action {
+  readonly type = UserActionTypes.ShareCredential;
+
+  constructor(public payload: IShareCredentialRequest) { }
+}
+
+export class ShareCredentialSuccess implements Action {
+  readonly type = UserActionTypes.ShareCredentialSuccess;
+}
+
+export class ShareCredentialError implements Action {
+  readonly type = UserActionTypes.ShareCredentialError;
+
+  constructor(public payload: Error) { }
+}
+
 export class EditCredential implements Action {
   readonly type = UserActionTypes.EditCredential;
 
@@ -188,6 +213,22 @@ export class RemoveCredentialError implements Action {
   constructor(public payload: Error) { }
 }
 
+export class GetActionLog implements Action {
+  readonly type = UserActionTypes.GetActionLog;
+}
+
+export class GetActionLogSuccess implements Action {
+  readonly type = UserActionTypes.GetActionLogSuccess;
+
+  constructor(public payload: any[]) { }
+}
+
+export class GetActionLogError implements Action {
+  readonly type = UserActionTypes.GetActionLogError;
+
+  constructor(public payload: Error) { }
+}
+
 export type UserActions =
   SignUp
   | SignUpSuccess
@@ -209,9 +250,15 @@ export type UserActions =
   | DecryptCredential
   | DecryptCredentialSuccess
   | DecryptCredentialError
+  | ShareCredential
+  | ShareCredentialSuccess
+  | ShareCredentialError
   | EditCredential
   | EditCredentialSuccess
   | EditCredentialError
   | RemoveCredential
   | RemoveCredentialSuccess
-  | RemoveCredentialError;
+  | RemoveCredentialError
+  | GetActionLog
+  | GetActionLogSuccess
+  | GetActionLogError;

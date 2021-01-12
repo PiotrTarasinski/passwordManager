@@ -22,7 +22,11 @@ import {
   DecryptCredentialSuccess,
   DecryptCredentialError,
   EditCredentialSuccess,
-  EditCredentialError
+  EditCredentialError,
+  ShareCredentialSuccess,
+  ShareCredentialError,
+  GetActionLogSuccess,
+  GetActionLogError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
 import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
@@ -32,7 +36,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { Store, select } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { selectUser } from '../selectors/selectUser.selector';
-import { IAddCredentialRequest, ICredential, IEditCredentialRequest } from 'src/app/models/interfaces/dashboard.interface';
+import { IAddCredentialRequest, ICredential, IEditCredentialRequest, IShareCredentialRequest } from 'src/app/models/interfaces/dashboard.interface';
 
 @Injectable()
 export class UserEffects {
@@ -74,7 +78,7 @@ export class UserEffects {
     switchMap((payload: ISignInRequest) =>
       this.http.post('/api/users/login', payload)
     ),
-    switchMap(({ user: { token, email, lastSuccessLogin, lastFailureLogin }}: ISignInResponse) => {
+    switchMap(({ user: { token, email, lastSuccessLogin, lastFailureLogin } }: ISignInResponse) => {
       localStorage.setItem('token', token);
       localStorage.setItem('email', email);
       localStorage.setItem('lastSuccessLogin', lastSuccessLogin);
@@ -85,7 +89,7 @@ export class UserEffects {
       return this.handler.handleSuccess(
         new SignInSuccess({ isLoggedIn: true, email, lastSuccessLogin, lastFailureLogin }),
         'Logged In Successfully'
-        );
+      );
     }
     ),
     catchError((err, caught) =>
@@ -133,10 +137,10 @@ export class UserEffects {
 
   @Effect() GetCredentials$ = this.actions$.pipe(
     ofType(UserActionTypes.GetCredentials),
-    switchMap(() => 
+    switchMap(() =>
       this.http.get('/api/password')
     ),
-    switchMap((passwords: ICredential[]) => 
+    switchMap((passwords: ICredential[]) =>
       this.handler.handleSuccess(new GetCredentialsSuccess(passwords))
     ),
     catchError((err, caught) =>
@@ -150,7 +154,7 @@ export class UserEffects {
   @Effect() AddCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.AddCredential),
     pluck('payload'),
-    switchMap((payload: IAddCredentialRequest) => 
+    switchMap((payload: IAddCredentialRequest) =>
       this.http.post('/api/password/create', payload)
     ),
     switchMap(() =>
@@ -170,8 +174,8 @@ export class UserEffects {
   @Effect() DecryptCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.DecryptCredential),
     pluck('payload'),
-    switchMap((id: string) => 
-      this.http.get(`/api/password/get/${id}`, )
+    switchMap((id: string) =>
+      this.http.get(`/api/password/get/${id}`,)
     ),
     switchMap((response: ICredential) =>
       this.handler.handleSuccess(
@@ -186,10 +190,31 @@ export class UserEffects {
     ),
   );
 
+  @Effect() ShareCredential$ = this.actions$.pipe(
+    ofType(UserActionTypes.ShareCredential),
+    pluck('payload'),
+    switchMap((payload: IShareCredentialRequest) =>
+      this.http.post('/api/password/share', payload)
+    ),
+    switchMap(() =>
+      this.handler.handleSuccess(
+        new ShareCredentialSuccess(),
+        'Credential shared successfully'
+      )
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new ShareCredentialError(err),
+        "User with that email doesn't exist"
+      )
+    ),
+  );
+
   @Effect() EditCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.EditCredential),
     pluck('payload'),
-    switchMap((payload: IEditCredentialRequest) => 
+    switchMap((payload: IEditCredentialRequest) =>
       this.http.post('/api/password/update', payload)
     ),
     switchMap(() =>
@@ -210,10 +235,10 @@ export class UserEffects {
   @Effect() RemoveCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.RemoveCredential),
     pluck('payload'),
-    switchMap((id: string) => 
+    switchMap((id: string) =>
       this.http.delete(`api/password/delete/${id}`)
     ),
-    switchMap(() => 
+    switchMap(() =>
       this.handler.handleSuccess(
         new RemoveCredentialSuccess(),
         'Removed Credential Successfully'
@@ -223,6 +248,22 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new RemoveCredentialError(err),
+      )
+    ),
+  );
+
+  @Effect() GetActionLog$ = this.actions$.pipe(
+    ofType(UserActionTypes.GetActionLog),
+    switchMap(() =>
+      this.http.get('/api/password/passwordLog')
+    ),
+    switchMap((result: any[]) =>
+      this.handler.handleSuccess(new GetActionLogSuccess(result))
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new GetActionLogError(err),
       )
     ),
   );

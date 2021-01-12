@@ -7,6 +7,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { Logout } from 'src/app/store/user/user.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordModalComponent } from '../../modals/ChangePasswordModal/change-password-modal.component';
+import { ActionLogModalComponent } from '../../modals/ActionLogModal/action-log-modal.component';
 
 @Component({
   selector: 'app-navbar',
@@ -29,6 +30,10 @@ export class NavbarComponent implements OnDestroy {
 
   openChangePasswordModal() {
     this.dialog.open(ChangePasswordModalComponent, { autoFocus: false });
+  }
+
+  openActionLogModal() {
+    this.dialog.open(ActionLogModalComponent, { autoFocus: false });
   }
 
   logout() {

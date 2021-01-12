@@ -15,6 +15,11 @@ export interface IAddCredentialRequest {
   password: string;
 }
 
+export interface IShareCredentialRequest {
+  passwordId: string;
+  email: string;
+}
+
 export interface IEditCredentialRequest extends IAddCredentialRequest {
   id: string;
 }

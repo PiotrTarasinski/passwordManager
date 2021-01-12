@@ -12,6 +12,7 @@ import { CredentialModalComponent } from 'src/app/shared/modals/CredentialModal/
 import Swal from 'sweetalert2';
 import { GetCredentials, UserActionTypes, RemoveCredential, DecryptCredential } from 'src/app/store/user/user.actions';
 import { takeUntil, pluck } from 'rxjs/operators';
+import { ShareCredentialModalComponent } from 'src/app/shared/modals/ShareCredentialModal/share-credential-modal.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -62,9 +63,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         pluck('payload')
       )
       .subscribe(({ id, password }: ICredential) => {
-          this.elementList = this.elementList.map(el => el.id === id ? { ...el, password } : el);
-          this.dataSource.data = this.elementList;
-          this.visiblePasswords.push(id);
+        this.elementList = this.elementList.map(el => el.id === id ? { ...el, password } : el);
+        this.dataSource.data = this.elementList;
+        this.visiblePasswords.push(id);
       });
 
     this.actions$
@@ -94,6 +95,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   openCredentialModal(credential?: ICredential) {
     this.dialog.open(CredentialModalComponent, { autoFocus: false, data: credential || null });
+  }
+
+  openShareCredentialModal(credential: ICredential) {
+    this.dialog.open(ShareCredentialModalComponent, { autoFocus: false, data: credential.id });
   }
 
   removeCredential({ id }: ICredential) {
