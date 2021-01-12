@@ -7,7 +7,7 @@
   </div>
   <mat-dialog-content>
     <div class="py-4">
-      <div class="toolbar mt-3">
+      <div class="toolbar">
         <mat-form-field class="w-100 search-input" appearance="outline">
           <mat-label>Search</mat-label>
           <input matInput placeholder="Search" (keydown.enter)="filterByValue()" [(ngModel)]="search" />
@@ -16,46 +16,73 @@
           </button>
         </mat-form-field>
       </div>
-      <table mat-table [dataSource]="dataSource" matSort matSortActive="updated" matSortDirection="desc"
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc"
         matSortDisableClear class="w-100">
 
-        <ng-container matColumnDef="created">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Creation Date</th>
+        <ng-container matColumnDef="passwordId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
           <td mat-cell *matCellDef="let element">
-            {{ element?.created | formatDateTime}}
+            {{ element?.passwordId}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="updated">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Modification Date</th>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
           <td mat-cell *matCellDef="let element">
-            {{ element?.updated | formatDateTime}}
+            {{ element?.date | formatDateTime}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="info">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element" class="py-1">
+            <span class="credential-value">New Value</span>
+            <mat-divider class="my-1"></mat-divider>
+            <span class="credential-value">Old Value</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="url">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Page url</th>
+          <th mat-header-cell *matHeaderCellDef>Page Url</th>
           <td mat-cell *matCellDef="let element">
-            <a href="{{ element?.url }}" target="_blank">{{ element?.url }}</a>
+            <a class="credential-value" href="{{ element?.newUrl }}" target="_blank">{{ element?.newUrl }}</a>
+            <mat-divider class="my-1"></mat-divider>
+            <a class="credential-value" href="{{ element?.oldUrl }}" target="_blank">{{ element?.oldUrl }}</a>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
-          <td mat-cell *matCellDef="let element">{{ element?.description }}</td>
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="credential-value">{{ element?.newDescription }}</span>
+            <mat-divider class="my-1"></mat-divider>
+            <span class="credential-value">{{ element?.oldDescription }}</span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="username">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
-          <td mat-cell *matCellDef="let element">{{ element?.username }}</td>
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="credential-value">{{ element?.newUsername }}</span>
+            <mat-divider class="my-1"></mat-divider>
+            <span class="credential-value">{{ element?.oldUsername }}</span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="password">
           <th mat-header-cell *matHeaderCellDef>Password</th>
           <td mat-cell *matCellDef="let element">
             <input [type]="visiblePasswords.indexOf(element?.id) === -1 ? 'password' : 'text'" readonly
-              class="password-input" [value]="element?.password" />
+              class="password-input" [value]="element?.newPassword" />
+            <mat-divider class="my-1 mr-2"></mat-divider>
+            <input [type]="visiblePasswords.indexOf(element?.id) === -1 ? 'password' : 'text'" readonly
+              class="password-input" [value]="element?.oldPassword" />
           </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Action Type</th>
+          <td mat-cell *matCellDef="let element">{{ element?.type }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -66,14 +93,9 @@
               (click)="togglePassword(element)">
               <mat-icon>{{ visiblePasswords.indexOf(element?.id) === -1 ? 'visibility' : 'visibility_off' }}</mat-icon>
             </button>
-            <button mat-icon-button matTooltip="Share Credential" (click)="openShareCredentialModal(element)">
-              <mat-icon>share</mat-icon>
-            </button>
-            <button mat-icon-button matTooltip="Edit Credential" (click)="openCredentialModal(element)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button matTooltip="Remove Credential" (click)="removeCredential(element)">
-              <mat-icon>delete</mat-icon>
+            <button mat-icon-button matTooltip="Restore" (click)="restore(element)"
+              [disabled]="element?.type !== 'DELETE_PASSWORD' && element?.type !== 'MODIFY_PASSWORD'">
+              <mat-icon>restore</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -90,7 +112,7 @@
       </div>
 
       <div class="table-footer">
-        <mat-paginator length="{{ elementList?.length || 0 }}" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]">
+        <mat-paginator length="{{ elementList?.length || 0 }}" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 50]">
         </mat-paginator>
       </div>
     </div>

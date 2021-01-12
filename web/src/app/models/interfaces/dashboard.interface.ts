@@ -23,3 +23,17 @@ export interface IShareCredentialRequest {
 export interface IEditCredentialRequest extends IAddCredentialRequest {
   id: string;
 }
+
+export interface IActionLog {
+  id: string;
+  passwordId: string;
+  date: Date;
+  oldUrl?: string;
+  newUrl?: string;
+  oldDescription?: string;
+  newDescription?: string;
+  oldUsername?: string;
+  newUsername?: string;
+  oldPassword?: string;
+  newPassword?: string;
+}

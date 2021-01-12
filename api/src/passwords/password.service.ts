@@ -92,8 +92,8 @@ export class PasswordService {
             throw new HttpException({ message: 'Unauthorized.' }, HttpStatus.UNAUTHORIZED);
         }
 
-        log.previousValue = CryptoAES.decrypt(log.previousValue, log.hashedValue).toString(CryptoENC);
-        log.presentValue = CryptoAES.decrypt(log.presentValue, log.hashedValue).toString(CryptoENC);
+        log.oldPassword = CryptoAES.decrypt(log.oldPassword, log.hashedValue).toString(CryptoENC);
+        log.newPassword = CryptoAES.decrypt(log.newPassword, log.hashedValue).toString(CryptoENC);
         return log;
     }
 
@@ -116,7 +116,21 @@ export class PasswordService {
         const author = user.id;
         const res = await this.passwordRepository.delete({ id: id as unknown as number, author });
 
-        const dataLogEntity = this.buildLogEntity(new Date(), password["PasswordEntity_password"], "", password["PasswordEntity_id"], user, user.password, null, password["PasswordEntity_description"], ChangeTypeEnum.DELETE_PASSWORD);
+        const dataLogEntity = this.buildLogEntity(
+            new Date(),
+            password["PasswordEntity_id"],
+            user,
+            user.password,
+            ChangeTypeEnum.DELETE_PASSWORD,
+            password["PasswordEntity_url"],
+            '',
+            password["PasswordEntity_description"],
+            '',
+            password["PasswordEntity_username"],
+            '',
+            password["PasswordEntity_password"],
+            ''
+        );
 
         await this.dataLogRepository.save(dataLogEntity);
 
@@ -130,16 +144,32 @@ export class PasswordService {
 
     async recoverLastState(logId: number, user?: any): Promise<any> {
         const log = await this.dataLogRepository.findOne({ where: { id: logId } });
-        switch (log.functionType) {
+        switch (log.type) {
             case ChangeTypeEnum.DELETE_PASSWORD: {
                 let passwordEntity = new PasswordEntity();
-                passwordEntity.password = CryptoAES.encrypt(CryptoAES.decrypt(log.previousValue, log.hashedValue).toString(CryptoENC), user.password).toString();
-                passwordEntity.description = log.previousValue;
                 passwordEntity.author = user;
+                passwordEntity.url = log.oldUrl;
+                passwordEntity.description = log.oldDescription;
+                passwordEntity.username = log.oldUsername;
+                passwordEntity.password = CryptoAES.encrypt(CryptoAES.decrypt(log.oldPassword, log.hashedValue).toString(CryptoENC), user.password).toString();
 
                 const savedPassword = await this.passwordRepository.save(passwordEntity);
 
-                const dataLogEntity = this.buildLogEntity(new Date(), null, log.presentValue, log.recordId, user, log.hashedValue, log.presentDescription, null, ChangeTypeEnum.RESTORE_STATE);
+                const dataLogEntity = this.buildLogEntity(
+                    new Date(),
+                    log.passwordId,
+                    user,
+                    log.hashedValue,
+                    ChangeTypeEnum.RESTORE_STATE,
+                    '',
+                    savedPassword.url,
+                    '',
+                    savedPassword.description,
+                    '',
+                    savedPassword.username,
+                    '',
+                    log.newPassword
+                );
 
                 await this.dataLogRepository.save(dataLogEntity);
 
@@ -147,15 +177,31 @@ export class PasswordService {
             }
 
             case ChangeTypeEnum.MODIFY_PASSWORD: {
-                const password = await this.passwordRepository.findOne({ id: log.recordId });
+                const password = await this.passwordRepository.findOne({ id: log.passwordId });
                 const oldPassword = password;
-                const decryptedPassword = CryptoAES.decrypt(log.previousValue, log.hashedValue).toString(CryptoENC);
+                const decryptedPassword = CryptoAES.decrypt(log.oldPassword, log.hashedValue).toString(CryptoENC);
+                password.url = log.oldUrl;
+                password.description = log.oldDescription;
+                password.username = log.oldUsername;
                 password.password = CryptoAES.encrypt(decryptedPassword, user.password).toString();
-                password.description = log.previousDescription;
 
                 await this.passwordRepository.save(password);
 
-                const dataLogEntity = this.buildLogEntity(new Date(), log.presentValue, oldPassword.password, log.recordId, user, user.password, password.description, log.presentDescription, ChangeTypeEnum.RESTORE_STATE);
+                const dataLogEntity = this.buildLogEntity(
+                    new Date(),
+                    log.passwordId,
+                    user,
+                    user.password,
+                    ChangeTypeEnum.RESTORE_STATE,
+                    log.newUrl,
+                    log.oldUrl,
+                    log.newDescription,
+                    log.oldDescription,
+                    log.newUsername,
+                    log.oldUsername,
+                    log.newPassword,
+                    oldPassword.password
+                );
 
                 await this.dataLogRepository.save(dataLogEntity);
 
@@ -202,7 +248,21 @@ export class PasswordService {
 
         const savedPassword = await this.passwordRepository.save(passwordEntity);
 
-        const dataLogEntity = this.buildLogEntity(new Date(), toUpdate.password, passwordEntity.password, savedPassword.id, user, user.password, toUpdate.description, savedPassword.description, ChangeTypeEnum.MODIFY_PASSWORD);
+        const dataLogEntity = this.buildLogEntity(
+            new Date(),
+            savedPassword.id,
+            user,
+            user.password,
+            ChangeTypeEnum.MODIFY_PASSWORD,
+            toUpdate.url,
+            savedPassword.url,
+            toUpdate.description,
+            savedPassword.description,
+            toUpdate.username,
+            savedPassword.username,
+            toUpdate.password,
+            passwordEntity.password
+        );
 
         await this.dataLogRepository.save(dataLogEntity);
 
@@ -234,7 +294,21 @@ export class PasswordService {
 
         const savedPassword = await this.passwordRepository.save(passwordEntity);
 
-        const dataLogEntity = this.buildLogEntity(new Date(), "", passwordEntity.password, savedPassword.id, user, user.password, null, savedPassword.description, ChangeTypeEnum.ADD_PASSWORD);
+        const dataLogEntity = this.buildLogEntity(
+            new Date(),
+            savedPassword.id,
+            user,
+            user.password,
+            ChangeTypeEnum.ADD_PASSWORD,
+            '',
+            savedPassword.url,
+            '',
+            savedPassword.description,
+            '',
+            savedPassword.username,
+            '',
+            passwordEntity.password
+        );
 
         await this.dataLogRepository.save(dataLogEntity);
 
@@ -279,18 +353,24 @@ export class PasswordService {
         return { passwordRO };
     }
 
-    private buildLogEntity(initializeDate, previousValue, presentValue, recordId, user, hashedValue, previousDescription, presentDescription, functionType) {
+    private buildLogEntity(
+        date, passwordId, user, hashedValue, type, oldUrl, newUrl, oldDescription, newDescription, oldUsername, newUsername, oldPassword, newPassword
+    ) {
         const logEntity = new DataLogEntity();
-        logEntity.InitializeDate = initializeDate;
-        logEntity.previousValue = previousValue;
-        logEntity.presentValue = presentValue;
-        logEntity.recordId = recordId;
+        logEntity.date = date;
+        logEntity.passwordId = passwordId;
         logEntity.user = user;
         logEntity.hashedValue = user.password;
-        logEntity.previousDescription = previousDescription;
-        logEntity.presentDescription = presentDescription;
         logEntity.hashedValue = hashedValue;
-        logEntity.functionType = functionType;
+        logEntity.type = type;
+        logEntity.oldUrl = oldUrl;
+        logEntity.newUrl = newUrl;
+        logEntity.oldDescription = oldDescription;
+        logEntity.newDescription = newDescription;
+        logEntity.oldUsername = oldUsername;
+        logEntity.newUsername = newUsername;
+        logEntity.oldPassword = oldPassword;
+        logEntity.newPassword = newPassword;
         return logEntity;
     }
 

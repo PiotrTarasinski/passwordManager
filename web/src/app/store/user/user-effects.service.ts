@@ -26,7 +26,11 @@ import {
   ShareCredentialSuccess,
   ShareCredentialError,
   GetActionLogSuccess,
-  GetActionLogError
+  GetActionLogError,
+  DecryptActionLogCredentialSuccess,
+  DecryptActionLogCredentialError,
+  RestoreStateSuccess,
+  RestoreStateError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
 import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
@@ -36,7 +40,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { Store, select } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { selectUser } from '../selectors/selectUser.selector';
-import { IAddCredentialRequest, ICredential, IEditCredentialRequest, IShareCredentialRequest } from 'src/app/models/interfaces/dashboard.interface';
+import { IActionLog, IAddCredentialRequest, ICredential, IEditCredentialRequest, IShareCredentialRequest } from 'src/app/models/interfaces/dashboard.interface';
 
 @Injectable()
 export class UserEffects {
@@ -248,6 +252,7 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new RemoveCredentialError(err),
+        'Something went wrong'
       )
     ),
   );
@@ -264,6 +269,47 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new GetActionLogError(err),
+      )
+    ),
+  );
+
+  @Effect() DecryptActionLogCredential$ = this.actions$.pipe(
+    ofType(UserActionTypes.DecryptActionLogCredential),
+    pluck('payload'),
+    switchMap((id: string) =>
+      this.http.get(`api/password/passwordLog/decrypt/${id}`,)
+    ),
+    switchMap((response: IActionLog) =>
+      this.handler.handleSuccess(
+        new DecryptActionLogCredentialSuccess(response),
+      )
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new DecryptActionLogCredentialError(err),
+        'Something went wrong'
+      )
+    ),
+  );
+
+  @Effect() RestoreState$ = this.actions$.pipe(
+    ofType(UserActionTypes.RestoreState),
+    pluck('payload'),
+    switchMap((logId: string) =>
+      this.http.post('api/password/restore', { logId })
+    ),
+    switchMap(() =>
+      this.handler.handleSuccess(
+        new RestoreStateSuccess(),
+        'State restored successfully'
+      )
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new RestoreStateError(err),
+        'Something went wrong'
       )
     ),
   );

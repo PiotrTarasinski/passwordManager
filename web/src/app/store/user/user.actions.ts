@@ -5,6 +5,7 @@ import {
   ISignInRequest,
 } from 'src/app/models/interfaces/app.interface';
 import {
+  IActionLog,
   IAddCredentialRequest,
   ICredential,
   IEditCredentialRequest,
@@ -55,6 +56,14 @@ export enum UserActionTypes {
   GetActionLog = '[ActionLog] Get Action Log',
   GetActionLogSuccess = '[ActionLog] Get Action Log Success',
   GetActionLogError = '[ActionLog] Get Action Log Error',
+
+  DecryptActionLogCredential = '[ActionLog] Decrypt Action Log Credential',
+  DecryptActionLogCredentialSuccess = '[ActionLog] Decrypt Action Log Credential Success',
+  DecryptActionLogCredentialError = '[ActionLog] Decrypt Action Log Credential Error',
+
+  RestoreState = '[RestoreState] Restore State',
+  RestoreStateSuccess = '[RestoreState] Restore State Success',
+  RestoreStateError = '[RestoreState] Restore State Error',
 }
 
 export class SignUp implements Action {
@@ -220,11 +229,45 @@ export class GetActionLog implements Action {
 export class GetActionLogSuccess implements Action {
   readonly type = UserActionTypes.GetActionLogSuccess;
 
-  constructor(public payload: any[]) { }
+  constructor(public payload: IActionLog[]) { }
 }
 
 export class GetActionLogError implements Action {
   readonly type = UserActionTypes.GetActionLogError;
+
+  constructor(public payload: Error) { }
+}
+
+export class DecryptActionLogCredential implements Action {
+  readonly type = UserActionTypes.DecryptActionLogCredential;
+
+  constructor(public payload: string) { }
+}
+
+export class DecryptActionLogCredentialSuccess implements Action {
+  readonly type = UserActionTypes.DecryptActionLogCredentialSuccess;
+
+  constructor(public payload: IActionLog) { }
+}
+
+export class DecryptActionLogCredentialError implements Action {
+  readonly type = UserActionTypes.DecryptActionLogCredentialError;
+
+  constructor(public payload: Error) { }
+}
+
+export class RestoreState implements Action {
+  readonly type = UserActionTypes.RestoreState;
+
+  constructor(public payload: string) { }
+}
+
+export class RestoreStateSuccess implements Action {
+  readonly type = UserActionTypes.RestoreStateSuccess;
+}
+
+export class RestoreStateError implements Action {
+  readonly type = UserActionTypes.RestoreStateError;
 
   constructor(public payload: Error) { }
 }
@@ -261,4 +304,10 @@ export type UserActions =
   | RemoveCredentialError
   | GetActionLog
   | GetActionLogSuccess
-  | GetActionLogError;
+  | GetActionLogError
+  | DecryptActionLogCredential
+  | DecryptActionLogCredentialSuccess
+  | DecryptActionLogCredentialError
+  | RestoreState
+  | RestoreStateSuccess
+  | RestoreStateError;

@@ -35,7 +35,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       'actions',
     ];
 
-  isInitialized = true;
+  isInitialized = false;
   elementList: ICredential[] = [];
   dataSource = new MatTableDataSource(this.elementList);
   search = '';
@@ -55,6 +55,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       .subscribe((passwords: ICredential[]) => {
         this.elementList = passwords;
         this.dataSource.data = this.elementList;
+        this.visiblePasswords = [];
+        this.isInitialized = true;
       });
 
     this.actions$
@@ -73,12 +75,12 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         UserActionTypes.AddCredentialSuccess,
         UserActionTypes.EditCredentialSuccess,
         UserActionTypes.RemoveCredentialSuccess,
+        UserActionTypes.RestoreStateSuccess
       ),
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
         this.store.dispatch(new GetCredentials());
-        this.visiblePasswords = [];
       });
   }
 
