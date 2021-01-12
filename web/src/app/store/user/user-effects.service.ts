@@ -148,10 +148,9 @@ export class UserEffects {
   @Effect() AddCredential$ = this.actions$.pipe(
     ofType(UserActionTypes.AddCredential),
     pluck('payload'),
-    switchMap((payload: IAddCredentialRequest) => {
-      const params = setHttpParams({ ...payload, key: 'todo' });
-      return this.http.post('http://localhost:4000/password/create', params);
-    }),
+    switchMap((payload: IAddCredentialRequest) => 
+      this.http.post('/api/password/create', payload)
+    ),
     switchMap(() =>
       this.handler.handleSuccess(
         new AddCredentialSuccess(),

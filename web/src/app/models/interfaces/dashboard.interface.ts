@@ -13,7 +13,6 @@ export interface IAddCredentialRequest {
   description: string;
   username: string;
   password: string;
-  key: string;
 }
 
 export interface IEditCredentialRequest extends IAddCredentialRequest {

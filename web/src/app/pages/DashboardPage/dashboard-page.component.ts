@@ -76,6 +76,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.store.dispatch(new GetCredentials());
+        this.visiblePasswords = [];
       });
   }
 
