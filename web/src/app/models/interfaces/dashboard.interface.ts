@@ -1,12 +1,11 @@
 export interface ICredential {
   id: string;
-  userId: string;
-  url: string;
+  created: Date;
+  updated: Date;
+  url?: string;
   description?: string;
-  username: string;
+  username?: string;
   password: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface IAddCredentialRequest {
@@ -19,8 +18,4 @@ export interface IAddCredentialRequest {
 
 export interface IEditCredentialRequest extends IAddCredentialRequest {
   id: string;
-}
-
-export interface ICredentialsListResponse {
-  passwords: ICredential[];
 }

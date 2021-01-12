@@ -5,12 +5,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { ICredential, ICredentialsListResponse } from 'src/app/models/interfaces/dashboard.interface';
+import { ICredential } from 'src/app/models/interfaces/dashboard.interface';
 import { IState } from 'src/app/models/interfaces/store';
 import { MatDialog } from '@angular/material/dialog';
 import { CredentialModalComponent } from 'src/app/shared/modals/CredentialModal/credential-modal.component';
 import Swal from 'sweetalert2';
-import { GetCredentials, UserActionTypes, RemoveCredential } from 'src/app/store/user/user.actions';
+import { GetCredentials, UserActionTypes, RemoveCredential, DecryptCredential } from 'src/app/store/user/user.actions';
 import { takeUntil, pluck } from 'rxjs/operators';
 
 @Component({
@@ -25,7 +25,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] =
     [
-      'modificationDate',
+      'created',
+      'updated',
       'url',
       'description',
       'username',
@@ -50,9 +51,20 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         pluck('payload')
       )
-      .subscribe(({ passwords }: ICredentialsListResponse) => {
+      .subscribe((passwords: ICredential[]) => {
         this.elementList = passwords;
         this.dataSource.data = this.elementList;
+      });
+
+    this.actions$
+      .pipe(ofType(UserActionTypes.DecryptCredentialSuccess),
+        takeUntil(this.destroy$),
+        pluck('payload')
+      )
+      .subscribe(({ id, password }: ICredential) => {
+        this.elementList = this.elementList.map(el => el.id === id ? { ...el, password } : el);
+        this.dataSource.data = this.elementList;
+        this.visiblePasswords.push(id);
       });
 
     this.actions$
@@ -101,7 +113,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   togglePassword({ id }: ICredential) {
     const index = this.visiblePasswords.indexOf(id);
-    index === -1 ? this.visiblePasswords.push(id) : this.visiblePasswords.splice(index, 1);
+    // index === -1 ? this.visiblePasswords.push(id) : this.visiblePasswords.splice(index, 1);
+    index === -1 ? this.store.dispatch(new DecryptCredential(id)) : this.visiblePasswords.splice(index, 1);
   }
 
   ngOnDestroy(): void {

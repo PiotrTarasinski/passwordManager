@@ -18,7 +18,9 @@ import {
   ChangePasswordSuccess,
   Logout,
   RemoveCredentialSuccess,
-  RemoveCredentialError
+  RemoveCredentialError,
+  DecryptCredentialSuccess,
+  DecryptCredentialError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
 import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
@@ -28,8 +30,7 @@ import { IUserState } from 'src/app/models/interfaces/store/user-state.interface
 import { Store, select } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { selectUser } from '../selectors/selectUser.selector';
-import { IAddCredentialRequest, ICredentialsListResponse } from 'src/app/models/interfaces/dashboard.interface';
-import { decryptPassword } from 'src/app/utils/DecryptPassword';
+import { IAddCredentialRequest, ICredential } from 'src/app/models/interfaces/dashboard.interface';
 
 @Injectable()
 export class UserEffects {
@@ -51,9 +52,9 @@ export class UserEffects {
   @Effect() SignUp$ = this.actions$.pipe(
     ofType(UserActionTypes.SignUp),
     pluck('payload'),
-    switchMap((payload: ISignUpRequest) => {
-      return this.http.post('/api/users', payload);
-    }),
+    switchMap((payload: ISignUpRequest) =>
+      this.http.post('/api/users', payload)
+    ),
     switchMap(() =>
       this.handler.handleSuccess(new SignUpSuccess())
     ),
@@ -68,22 +69,19 @@ export class UserEffects {
   @Effect() SignIn$ = this.actions$.pipe(
     ofType(UserActionTypes.SignIn),
     pluck('payload'),
-    switchMap((payload: ISignInRequest) => {
-      return combineLatest(
-        this.http.post('/api/users/login', payload),
-        of(payload));
-    }),
-    switchMap(([{ user: { token, lastSuccessLogin, lastFailureLogin }}, { user: {email, password} }]: [ISignInResponse, ISignInRequest]) => {
+    switchMap((payload: ISignInRequest) =>
+      this.http.post('/api/users/login', payload)
+    ),
+    switchMap(({ user: { token, email, lastSuccessLogin, lastFailureLogin }}: ISignInResponse) => {
       localStorage.setItem('token', token);
       localStorage.setItem('email', email);
-      localStorage.setItem('password', password);
       localStorage.setItem('lastSuccessLogin', lastSuccessLogin);
       localStorage.setItem('lastFailureLogin', lastFailureLogin);
 
       this.router.navigateByUrl('/dashboard');
 
       return this.handler.handleSuccess(
-        new SignInSuccess({ isLoggedIn: true, email, password, lastSuccessLogin, lastFailureLogin }),
+        new SignInSuccess({ isLoggedIn: true, email, lastSuccessLogin, lastFailureLogin }),
         'Logged In Successfully'
         );
     }
@@ -133,14 +131,11 @@ export class UserEffects {
 
   @Effect() GetCredentials$ = this.actions$.pipe(
     ofType(UserActionTypes.GetCredentials),
-    switchMap(() => {
-      return this.http.get('/api/password');
-    }),
-    switchMap(() => {
-      // passwords = passwords.map(el => ({...el, password: decryptPassword(el.password)}));
-      const passwords = [];
-      return this.handler.handleSuccess(new GetCredentialsSuccess({passwords}));
-    }
+    switchMap(() => 
+      this.http.get('/api/password')
+    ),
+    switchMap((passwords: ICredential[]) => 
+      this.handler.handleSuccess(new GetCredentialsSuccess(passwords))
     ),
     catchError((err, caught) =>
       this.handler.handleError(
@@ -154,7 +149,7 @@ export class UserEffects {
     ofType(UserActionTypes.AddCredential),
     pluck('payload'),
     switchMap((payload: IAddCredentialRequest) => {
-      const params = setHttpParams({ ...payload, key: this.user?.password });
+      const params = setHttpParams({ ...payload, key: 'todo' });
       return this.http.post('http://localhost:4000/password/create', params);
     }),
     switchMap(() =>
@@ -167,6 +162,25 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new AddCredentialError(err),
+      )
+    ),
+  );
+
+  @Effect() DecryptCredential$ = this.actions$.pipe(
+    ofType(UserActionTypes.DecryptCredential),
+    pluck('payload'),
+    switchMap((id: string) => 
+      this.http.get(`/api/password/get/${id}`, )
+    ),
+    switchMap((response: ICredential) =>
+      this.handler.handleSuccess(
+        new DecryptCredentialSuccess(response),
+      )
+    ),
+    catchError((err, caught) =>
+      this.handler.handleError(
+        caught,
+        new DecryptCredentialError(err),
       )
     ),
   );

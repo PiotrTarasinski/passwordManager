@@ -5,7 +5,9 @@ import {
   ISignInRequest,
 } from 'src/app/models/interfaces/app.interface';
 import {
-  IAddCredentialRequest, ICredentialsListResponse, IEditCredentialRequest
+  IAddCredentialRequest,
+  ICredential,
+  IEditCredentialRequest,
 } from 'src/app/models/interfaces/dashboard.interface';
 import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
 
@@ -32,6 +34,10 @@ export enum UserActionTypes {
   AddCredential = '[Credential] Add Credential',
   AddCredentialSuccess = '[Credential] Add Credential Success',
   AddCredentialError = '[Credential] Add Credential Error',
+
+  DecryptCredential = '[Credential] Decrypt Credential',
+  DecryptCredentialSuccess = '[Credential] Decrypt Credential Success',
+  DecryptCredentialError = '[Credential] Decrypt Credential Error',
 
   EditCredential = '[Credential] Edit Credential',
   EditCredentialSuccess = '[Credential] Edit Credential Success',
@@ -107,7 +113,7 @@ export class GetCredentials implements Action {
 export class GetCredentialsSuccess implements Action {
   readonly type = UserActionTypes.GetCredentialsSuccess;
 
-  constructor(public payload: ICredentialsListResponse) { }
+  constructor(public payload: ICredential[]) { }
 }
 
 export class GetCredentialsError implements Action {
@@ -128,6 +134,24 @@ export class AddCredentialSuccess implements Action {
 
 export class AddCredentialError implements Action {
   readonly type = UserActionTypes.AddCredentialError;
+
+  constructor(public payload: Error) { }
+}
+
+export class DecryptCredential implements Action {
+  readonly type = UserActionTypes.DecryptCredential;
+
+  constructor(public payload: string) { }
+}
+
+export class DecryptCredentialSuccess implements Action {
+  readonly type = UserActionTypes.DecryptCredentialSuccess;
+
+  constructor(public payload: ICredential) { }
+}
+
+export class DecryptCredentialError implements Action {
+  readonly type = UserActionTypes.DecryptCredentialError;
 
   constructor(public payload: Error) { }
 }
@@ -182,6 +206,9 @@ export type UserActions =
   | AddCredential
   | AddCredentialSuccess
   | AddCredentialError
+  | DecryptCredential
+  | DecryptCredentialSuccess
+  | DecryptCredentialError
   | EditCredential
   | EditCredentialSuccess
   | EditCredentialError

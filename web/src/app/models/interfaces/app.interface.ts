@@ -22,6 +22,7 @@ export interface ISignInRequest {
 export interface ISignInResponse {
   user: {
     token: string;
+    email: string;
     lastSuccessLogin?: string;
     lastFailureLogin?: string;
   }

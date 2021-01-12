@@ -4,7 +4,6 @@ import { UserActions, UserActionTypes } from './user.actions';
 const initialState: IUserState = {
   isLoggedIn: localStorage.getItem('token') ? true : false,
   email: localStorage.getItem('email') || '',
-  password: localStorage.getItem('password') || '',
   lastSuccessLogin: localStorage.getItem('lastSuccessLogin') || '',
   lastFailureLogin: localStorage.getItem('lastFailureLogin') || '',
 };
