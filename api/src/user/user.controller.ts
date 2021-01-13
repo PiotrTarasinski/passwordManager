@@ -69,7 +69,7 @@ export class UserController {
           throw new HttpException("Your ip address is blocked. Please contact administrator", 401)
         }
         else {
-          throw new HttpException("Something went wrong", 401);
+          throw new HttpException("Sign In Failed", 401);
         }
       };
 

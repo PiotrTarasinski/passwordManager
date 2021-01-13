@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
-import { SignIn } from 'src/app/store/user/user.actions';
+import { SignIn, UnblockAccount } from 'src/app/store/user/user.actions';
 
 @Component({
   selector: 'app-login-page',
@@ -42,6 +42,10 @@ export class LoginPageComponent implements OnDestroy {
     }
 
     this.store.dispatch(new SignIn({ user: { ...this.form.value } }));
+  }
+
+  unblockAccount() {
+    this.store.dispatch(new UnblockAccount());
   }
 
   ngOnDestroy(): void {

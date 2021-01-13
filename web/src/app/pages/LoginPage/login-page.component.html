@@ -8,13 +8,8 @@
       <mat-form-field class="w-100 custom-field-width" appearance="outline">
         <mat-label>Email</mat-label>
         <mat-icon matPrefix class="mr-2">email</mat-icon>
-        <input
-          matInput
-          formControlName="email"
-          name="prevent_autofill_email"
-          placeholder="Email"
-          autocomplete="new-password"
-        />
+        <input matInput formControlName="email" name="prevent_autofill_email" placeholder="Email"
+          autocomplete="new-password" />
         <mat-error *ngIf="form.controls.email.invalid">
           {{ form.controls.email | inputError }}
         </mat-error>
@@ -22,14 +17,8 @@
       <mat-form-field class="w-100 custom-field-width" appearance="outline">
         <mat-label>Password</mat-label>
         <mat-icon matPrefix class="mr-2">vpn_key</mat-icon>
-        <input 
-          matInput
-          formControlName="password" 
-          name="prevent_autofill_password"
-          placeholder="Password"
-          [type]="hidePassword ? 'password' : 'text'"
-          autocomplete="new-password" 
-        />
+        <input matInput formControlName="password" name="prevent_autofill_password" placeholder="Password"
+          [type]="hidePassword ? 'password' : 'text'" autocomplete="new-password" />
         <mat-error *ngIf="form.controls.password.invalid">
           {{ form.controls.password | inputError }}
         </mat-error>
@@ -42,5 +31,6 @@
     <p class="description mt-4">
       Don't have an account? <a routerLink="/register" class="link">Sign up</a>
     </p>
+    <p class="unblock-btn" (click)="unblockAccount()">Unblock Account</p>
   </div>
 </div>

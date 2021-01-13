@@ -30,11 +30,12 @@ import {
   DecryptActionLogCredentialSuccess,
   DecryptActionLogCredentialError,
   RestoreStateSuccess,
-  RestoreStateError
+  RestoreStateError,
+  UnblockAccountSuccess,
+  UnblockAccountError
 } from './user.actions';
 import { setHttpParams } from 'src/app/utils/SetHttpParams';
 import { ISignUpRequest, ISignInResponse, IChangePasswordRequest, ISignInRequest } from 'src/app/models/interfaces/app.interface';
-import { combineLatest, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
 import { Store, select } from '@ngrx/store';
@@ -72,6 +73,7 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new SignUpError(err),
+        err?.error?.message
       )
     ),
   );
@@ -92,16 +94,37 @@ export class UserEffects {
 
       return this.handler.handleSuccess(
         new SignInSuccess({ isLoggedIn: true, email, lastSuccessLogin, lastFailureLogin }),
-        'Logged In Successfully'
       );
     }
     ),
-    catchError((err, caught) =>
-      this.handler.handleError(
+    catchError((err, caught) => {
+      return this.handler.handleError(
         caught,
         new SignInError(err),
-        'Invalid Credentials'
+        err?.error?.message || err?.error?.error
+      );
+    }
+    ),
+  );
+
+  @Effect() UnblockAccount$ = this.actions$.pipe(
+    ofType(UserActionTypes.UnblockAccount),
+    switchMap(() =>
+      this.http.delete('/api/user/blockade')
+    ),
+    switchMap(() =>
+      this.handler.handleSuccess(
+        new UnblockAccountSuccess(),
+        'Account unblocked successfully'
       )
+    ),
+    catchError((err, caught) => {
+      return this.handler.handleError(
+        caught,
+        new UnblockAccountError(err),
+        'Something went wrong'
+      );
+    }
     ),
   );
 
@@ -125,7 +148,7 @@ export class UserEffects {
       this.handler.handleError(
         caught,
         new ChangePasswordError(err),
-        'Invalid Credentials'
+        'Something went wrong'
       )
     ),
   );

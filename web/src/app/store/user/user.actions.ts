@@ -22,6 +22,10 @@ export enum UserActionTypes {
   SignInSuccess = '[User] Sign In Success',
   SignInError = '[User] Sign In Error',
 
+  UnblockAccount = '[User] Unblock Account',
+  UnblockAccountSuccess = '[User] Unblock Account Success',
+  UnblockAccountError = '[User] Unblock Account Error',
+
   ToggleEditMode = '[User] Toggle Edit Mode',
 
   ChangePassword = '[User] Change Password',
@@ -98,6 +102,20 @@ export class SignInSuccess implements Action {
 
 export class SignInError implements Action {
   readonly type = UserActionTypes.SignInError;
+
+  constructor(public payload: Error) { }
+}
+
+export class UnblockAccount implements Action {
+  readonly type = UserActionTypes.UnblockAccount;
+}
+
+export class UnblockAccountSuccess implements Action {
+  readonly type = UserActionTypes.UnblockAccountSuccess;
+}
+
+export class UnblockAccountError implements Action {
+  readonly type = UserActionTypes.UnblockAccountError;
 
   constructor(public payload: Error) { }
 }
@@ -285,6 +303,9 @@ export type UserActions =
   | SignIn
   | SignInSuccess
   | SignInError
+  | UnblockAccount
+  | UnblockAccountSuccess
+  | UnblockAccountError
   | ToggleEditMode
   | ChangePassword
   | ChangePasswordSuccess

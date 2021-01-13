@@ -91,8 +91,8 @@ export class UserService {
     }
 
     if (user) {
-      const errors = { username: 'Username and email must be unique.' };
-      throw new HttpException({ message: 'Input data validation failed', errors }, HttpStatus.BAD_REQUEST);
+      const errors = { email: 'That email address is already in use' };
+      throw new HttpException({ message: 'That email address is already in use', errors }, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -242,12 +242,14 @@ export class UserService {
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error:
-            'Your account is blocked, unblock it by clicking on the unblock button.',
+            'Your account is blocked. Please contact administrator.',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
     const blockedDate = user.blockDate || address.blockDate;
+    const displayedDate = new Date(blockedDate).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '-')
+      + ' ' + new Date(blockedDate).toLocaleTimeString();
 
 
     if (blockedDate?.getTime() >= new Date().getTime()) {
@@ -255,7 +257,7 @@ export class UserService {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: `Your account is blocked until ${blockedDate}`,
+          error: `Your account is blocked until ${displayedDate}`,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -295,8 +297,8 @@ export class UserService {
         isBlocked: false,
         blockDate: null,
       });
-        
-    } catch(err) {
+
+    } catch (err) {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
