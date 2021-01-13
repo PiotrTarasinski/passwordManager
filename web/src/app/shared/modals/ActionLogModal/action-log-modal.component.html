@@ -28,7 +28,7 @@
 
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element" style="border-right: 1px solid rgba(0, 0, 0, 0.12);">
             {{ element?.date | formatDateTime}}
           </td>
         </ng-container>
@@ -36,9 +36,9 @@
         <ng-container matColumnDef="info">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element" class="py-1">
-            <span class="credential-value">New Value</span>
+            <span class="credential-value pl-1">New Value</span>
             <mat-divider class="my-1"></mat-divider>
-            <span class="credential-value">Old Value</span>
+            <span class="credential-value pl-1">Old Value</span>
           </td>
         </ng-container>
 
@@ -71,10 +71,10 @@
 
         <ng-container matColumnDef="password">
           <th mat-header-cell *matHeaderCellDef>Password</th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element" style="border-right: 1px solid rgba(0, 0, 0, 0.12);">
             <input [type]="visiblePasswords.indexOf(element?.id) === -1 ? 'password' : 'text'" readonly
               class="password-input" [value]="element?.newPassword" />
-            <mat-divider class="my-1 mr-2"></mat-divider>
+            <mat-divider class="my-1"></mat-divider>
             <input [type]="visiblePasswords.indexOf(element?.id) === -1 ? 'password' : 'text'" readonly
               class="password-input" [value]="element?.oldPassword" />
           </td>
@@ -82,7 +82,9 @@
 
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Action Type</th>
-          <td mat-cell *matCellDef="let element">{{ element?.type }}</td>
+          <td mat-cell *matCellDef="let element" style="text-transform: capitalize" class="pl-1">
+            {{ element?.type?.toLocaleLowerCase()?.replace('_', ' ')}}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
