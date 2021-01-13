@@ -69,15 +69,15 @@
             <mat-icon>{{ visiblePasswords.indexOf(element?.id) === -1 ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
           <button mat-icon-button matTooltip="Share Credential" (click)="openShareCredentialModal(element)"
-            [disabled]="!editMode">
+            [disabled]="!editMode || element?.isShared">
             <mat-icon>share</mat-icon>
           </button>
           <button mat-icon-button matTooltip="Edit Credential" (click)="openCredentialModal(element)"
-            [disabled]="!editMode">
+            [disabled]="!editMode || element?.isShared">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button matTooltip="Remove Credential" (click)="removeCredential(element)"
-            [disabled]="!editMode">
+            [disabled]="!editMode || element?.isShared">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

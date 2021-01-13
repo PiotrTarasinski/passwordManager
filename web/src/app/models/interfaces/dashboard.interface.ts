@@ -6,6 +6,7 @@ export interface ICredential {
   description?: string;
   username: string;
   password: string;
+  isShared?: boolean;
 }
 
 export interface IAddCredentialRequest {

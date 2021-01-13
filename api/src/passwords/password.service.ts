@@ -30,7 +30,7 @@ export class PasswordService {
         private dataLogRepository: Repository<DataLogEntity>
     ) { }
 
-    async findAll(user?: any): Promise<PasswordEntity[]> {
+    async findAll(user?: any): Promise<any[]> {
 
         if (!user) {
             throw new HttpException({ message: 'Could not find password owner.' }, HttpStatus.UNAUTHORIZED);
@@ -43,8 +43,9 @@ export class PasswordService {
         const sharedPasswords = await this.sharedPasswordRepository.find({ where: { author } });
         const ids = sharedPasswords.map((i) => i.passwordId);
         let sharedPasswordResults = ids.length ? await qb.whereInIds(ids).getMany() : [];
+        let sharedPasswordsRes = sharedPasswordResults.map(el => ({ ...el, isShared: true }));
 
-        return sharedPasswords ? [...passwords, ...sharedPasswordResults] : [...passwords];
+        return sharedPasswords ? [...passwords, ...sharedPasswordsRes] : [...passwords];
 
     }
 
