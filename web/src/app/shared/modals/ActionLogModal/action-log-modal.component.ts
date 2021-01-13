@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { DecryptActionLogCredential, GetActionLog, RestoreState, UserActionTypes } from 'src/app/store/user/user.actions';
@@ -11,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { IActionLog } from 'src/app/models/interfaces/dashboard.interface';
 import Swal from 'sweetalert2';
+import { selectUser } from 'src/app/store/selectors/selectUser.selector';
 
 @Component({
   selector: 'app-action-log-modal',
@@ -41,12 +42,17 @@ export class ActionLogModalComponent implements OnDestroy {
   search = '';
   searchedBy = '';
   visiblePasswords: string[] = [];
+  editMode = false;
 
   constructor(
     private store: Store<IState>,
     private actions$: Actions,
     public dialogRef: MatDialogRef<ActionLogModalComponent>,
   ) {
+    this.store.pipe(select(selectUser)).subscribe(({ editMode }) => {
+      this.editMode = editMode;
+    });
+
     this.actions$
       .pipe(ofType(UserActionTypes.GetActionLogSuccess),
         takeUntil(this.destroy$),

@@ -94,7 +94,7 @@
               <mat-icon>{{ visiblePasswords.indexOf(element?.id) === -1 ? 'visibility' : 'visibility_off' }}</mat-icon>
             </button>
             <button mat-icon-button matTooltip="Restore" (click)="restore(element)"
-              [disabled]="element?.type !== 'DELETE_PASSWORD' && element?.type !== 'MODIFY_PASSWORD'">
+              [disabled]="!editMode || (element?.type !== 'DELETE_PASSWORD' && element?.type !== 'MODIFY_PASSWORD')">
               <mat-icon>restore</mat-icon>
             </button>
           </td>

@@ -3,4 +3,5 @@ export interface IUserState {
   email?: string;
   lastSuccessLogin?: string;
   lastFailureLogin?: string;
+  editMode?: boolean;
 }

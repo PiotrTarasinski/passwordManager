@@ -7,6 +7,7 @@
     <button mat-flat-button class="action-btn primary mr-2" routerLink="/login">Sign In</button>
     <button mat-flat-button class="action-btn pink" routerLink="/register">Create Account</button>
   </ng-container>
+  <mat-slide-toggle *ngIf="user?.isLoggedIn" color="primary" (change)="toggleEditMode()">Edit mode</mat-slide-toggle>
   <button mat-button *ngIf="user?.isLoggedIn" [matMenuTriggerFor]="menu" class="avatar">
     <mat-icon class="mr-2">account_circle</mat-icon>
     {{ user?.email }}

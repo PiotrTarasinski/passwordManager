@@ -6,12 +6,16 @@ const initialState: IUserState = {
   email: localStorage.getItem('email') || '',
   lastSuccessLogin: localStorage.getItem('lastSuccessLogin') || '',
   lastFailureLogin: localStorage.getItem('lastFailureLogin') || '',
+  editMode: false,
 };
 
 export function userReducer(state: IUserState = initialState, action: UserActions) {
   switch (action.type) {
     case UserActionTypes.SignInSuccess:
-      return action.payload;
+      return { ...action.payload, editMode: false };
+
+    case UserActionTypes.ToggleEditMode:
+      return { ...state, editMode: !state.editMode };
 
     case UserActionTypes.LogoutSuccess:
       return { isLoggedIn: false };

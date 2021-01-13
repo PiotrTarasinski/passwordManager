@@ -38,6 +38,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const COMPONENTS = [
   NavbarComponent,
@@ -82,6 +83,7 @@ const MODULES = [
   MatSliderModule,
   MatToolbarModule,
   MatMenuModule,
+  MatSlideToggleModule,
 ];
 
 @NgModule({

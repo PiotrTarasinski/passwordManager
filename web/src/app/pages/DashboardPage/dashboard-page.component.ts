@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Actions, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { ICredential } from 'src/app/models/interfaces/dashboard.interface';
 import { IState } from 'src/app/models/interfaces/store';
@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { GetCredentials, UserActionTypes, RemoveCredential, DecryptCredential } from 'src/app/store/user/user.actions';
 import { takeUntil, pluck } from 'rxjs/operators';
 import { ShareCredentialModalComponent } from 'src/app/shared/modals/ShareCredentialModal/share-credential-modal.component';
+import { selectUser } from 'src/app/store/selectors/selectUser.selector';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -41,12 +42,17 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   search = '';
   searchedBy = '';
   visiblePasswords: string[] = [];
+  editMode = false;
 
   constructor(
     private store: Store<IState>,
     private actions$: Actions,
     private dialog: MatDialog,
   ) {
+    this.store.pipe(select(selectUser)).subscribe(({ editMode }) => {
+      this.editMode = editMode;
+    });
+
     this.actions$
       .pipe(ofType(UserActionTypes.GetCredentialsSuccess),
         takeUntil(this.destroy$),

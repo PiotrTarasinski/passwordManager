@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { IState } from 'src/app/models/interfaces/store';
 import { selectUser } from 'src/app/store/selectors/selectUser.selector';
 import { IUserState } from 'src/app/models/interfaces/store/user-state.interface';
-import { Logout } from 'src/app/store/user/user.actions';
+import { Logout, ToggleEditMode } from 'src/app/store/user/user.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordModalComponent } from '../../modals/ChangePasswordModal/change-password-modal.component';
 import { ActionLogModalComponent } from '../../modals/ActionLogModal/action-log-modal.component';
@@ -34,6 +34,10 @@ export class NavbarComponent implements OnDestroy {
 
   openActionLogModal() {
     this.dialog.open(ActionLogModalComponent, { autoFocus: false });
+  }
+
+  toggleEditMode() {
+    this.store.dispatch(new ToggleEditMode());
   }
 
   logout() {

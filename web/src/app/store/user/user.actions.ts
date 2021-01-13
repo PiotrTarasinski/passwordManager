@@ -22,6 +22,8 @@ export enum UserActionTypes {
   SignInSuccess = '[User] Sign In Success',
   SignInError = '[User] Sign In Error',
 
+  ToggleEditMode = '[User] Toggle Edit Mode',
+
   ChangePassword = '[User] Change Password',
   ChangePasswordSuccess = '[User] Change Password Success',
   ChangePasswordError = '[User] Change Password Error',
@@ -98,6 +100,10 @@ export class SignInError implements Action {
   readonly type = UserActionTypes.SignInError;
 
   constructor(public payload: Error) { }
+}
+
+export class ToggleEditMode implements Action {
+  readonly type = UserActionTypes.ToggleEditMode;
 }
 
 export class ChangePassword implements Action {
@@ -279,6 +285,7 @@ export type UserActions =
   | SignIn
   | SignInSuccess
   | SignInError
+  | ToggleEditMode
   | ChangePassword
   | ChangePasswordSuccess
   | ChangePasswordError
