@@ -38,7 +38,7 @@
           <td mat-cell *matCellDef="let element" class="py-1">
             <span class="credential-value pl-1">New Value</span>
             <mat-divider class="my-1"></mat-divider>
-            <span class="credential-value pl-1">Old Value</span>
+            <span class="credential-value old-value pl-1">Old Value</span>
           </td>
         </ng-container>
 
@@ -47,7 +47,7 @@
           <td mat-cell *matCellDef="let element">
             <a class="credential-value" href="{{ element?.newUrl }}" target="_blank">{{ element?.newUrl }}</a>
             <mat-divider class="my-1"></mat-divider>
-            <a class="credential-value" href="{{ element?.oldUrl }}" target="_blank">{{ element?.oldUrl }}</a>
+            <a class="credential-value old-value" href="{{ element?.oldUrl }}" target="_blank">{{ element?.oldUrl }}</a>
           </td>
         </ng-container>
 
@@ -56,7 +56,7 @@
           <td mat-cell *matCellDef="let element">
             <span class="credential-value">{{ element?.newDescription }}</span>
             <mat-divider class="my-1"></mat-divider>
-            <span class="credential-value">{{ element?.oldDescription }}</span>
+            <span class="credential-value old-value">{{ element?.oldDescription }}</span>
           </td>
         </ng-container>
 
@@ -65,7 +65,7 @@
           <td mat-cell *matCellDef="let element">
             <span class="credential-value">{{ element?.newUsername }}</span>
             <mat-divider class="my-1"></mat-divider>
-            <span class="credential-value">{{ element?.oldUsername }}</span>
+            <span class="credential-value old-value">{{ element?.oldUsername }}</span>
           </td>
         </ng-container>
 
@@ -76,7 +76,7 @@
               class="password-input" [value]="element?.newPassword" />
             <mat-divider class="my-1"></mat-divider>
             <input [type]="visiblePasswords.indexOf(element?.id) === -1 ? 'password' : 'text'" readonly
-              class="password-input" [value]="element?.oldPassword" />
+              class="password-input old-value" [value]="element?.oldPassword" />
           </td>
         </ng-container>
 

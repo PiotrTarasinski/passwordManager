@@ -131,10 +131,9 @@ export class UserEffects {
   @Effect() ChangePassword$ = this.actions$.pipe(
     ofType(UserActionTypes.ChangePassword),
     pluck('payload'),
-    switchMap((payload: IChangePasswordRequest) => {
-      const params = setHttpParams({ ...payload });
-      return this.http.post('http://localhost:4000/auth/edit', params);
-    }),
+    switchMap((payload: IChangePasswordRequest) =>
+      this.http.put('/api/user', payload)
+    ),
     switchMap(() => {
       this.store.dispatch(new Logout());
 

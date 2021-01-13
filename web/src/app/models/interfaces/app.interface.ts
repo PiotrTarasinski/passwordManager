@@ -29,7 +29,9 @@ export interface ISignInResponse {
 }
 
 export interface IChangePasswordRequest {
-  oldPassword: string;
-  password: string;
-  encryption: HashAlgorithmEnum;
+  user: {
+    email: string;
+    type: HashAlgorithmEnum;
+    password: string;
+  }
 }
